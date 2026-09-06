@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="description" content="ExMe Post Studio — gerador, customizador e exportador em lote de 90 publicações phygital (feed 4:5 e story 9:16) para a ExMe · Exchange Made Easy."/>
+<title>ExMe Post Studio — 90 Publicações Phygital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   EXME POST STUDIO — design system do estúdio
+   Pitch Green #00E676 · Navy #080B11 · Gold #F59E0B · Cyan #00F0FF
+   ============================================================ */
+:root{
+  --green:#00E676; --green2:#10E868; --cyan:#00F0FF; --gold:#F59E0B;
+  --navy:#080B11; --navy2:#101521; --navy3:#161C2B; --navy4:#1D2436;
+  --ink:#E9F5EF; --dim:rgba(233,245,239,.62); --faint:rgba(233,245,239,.38);
+  --line:rgba(0,230,118,.18); --line2:rgba(233,245,239,.1);
+  --glass:rgba(16,21,33,.72); --glass2:rgba(22,28,43,.9);
+  --disp:'Unbounded',sans-serif; --ui:'Outfit',sans-serif;
+  --mono:'JetBrains Mono',monospace; --serif:'Instrument Serif',serif;
+  --r:18px; --shadow:0 30px 70px rgba(0,0,0,.55);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1200px 760px at 80% -14%, rgba(0,230,118,.10), transparent 62%),
+    radial-gradient(1000px 720px at -12% 32%, rgba(0,240,255,.055), transparent 58%),
+    radial-gradient(900px 620px at 50% 108%, rgba(245,158,11,.05), transparent 60%),
+    var(--navy);
+  color:var(--ink); font-family:var(--ui); font-size:15px; line-height:1.5;
+  min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--green);color:var(--navy)}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:rgba(0,230,118,.24);border-radius:8px;border:2px solid var(--navy)}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,230,118,.44)}
+.f-mono{font-family:var(--mono)} .f-disp{font-family:var(--disp)} .f-serif{font-family:var(--serif)}
+i.ic{display:inline-flex;flex:0 0 auto}
+i.ic>svg{width:100%;height:100%;display:block}
+
+/* ---------- fundo animado ---------- */
+#bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.75;pointer-events:none}
+
+/* ---------- estrutura ---------- */
+#app{position:relative;z-index:1;max-width:1560px;margin:0 auto;padding:0 26px 46px}
+#topbar{
+  position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  padding:15px 26px;margin:0 -26px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(8,11,17,.95) 55%, rgba(8,11,17,.8));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-mark{
+  width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto;color:var(--navy);
+  background:linear-gradient(135deg,var(--green),var(--green2) 52%,var(--cyan));
+  box-shadow:0 0 0 1px rgba(0,230,118,.42),0 12px 34px rgba(0,230,118,.3);
+}
+.brand-mark svg{width:26px;height:26px}
+.brand-text h1{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:.3px;color:#fff;line-height:1.1}
+.brand-text h1 span{color:var(--green)}
+.brand-text p{font-size:10px;letter-spacing:2.4px;color:var(--faint);margin-top:4px;font-family:var(--mono)}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+
+/* ---------- herói ---------- */
+#hero{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;margin:26px 0 4px}
+.hero-copy{padding:26px 28px;border-radius:var(--r);border:1px solid var(--line2);background:var(--glass);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;overflow:hidden}
+.hero-copy::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(500px 240px at 88% -30%,rgba(0,230,118,.16),transparent 70%)}
+.hero-kick{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;color:var(--green);margin-bottom:12px}
+.hero-copy h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,3.1vw,38px);line-height:1.1;letter-spacing:-.4px;color:#fff}
+.hero-copy h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--green);letter-spacing:0}
+.hero-copy p{color:var(--dim);font-size:15px;max-width:62ch;margin-top:12px;line-height:1.6}
+.hero-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.hero-list span{font-family:var(--mono);font-size:10.5px;letter-spacing:1.4px;color:var(--dim);
+  border:1px solid var(--line2);border-radius:999px;padding:6px 11px;background:rgba(233,245,239,.03)}
+.hero-stats{display:grid;gap:12px}
+.stat{border-radius:var(--r);border:1px solid var(--line2);background:var(--glass);padding:16px 18px;
+  display:flex;align-items:baseline;gap:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.stat b{font-family:var(--disp);font-weight:900;font-size:30px;color:#fff;letter-spacing:-1px}
+.stat span{font-family:var(--mono);font-size:10px;letter-spacing:2.2px;color:var(--faint)}
+.stat.acc b{color:var(--green)} .stat.gold b{color:var(--gold)} .stat.cy b{color:var(--cyan)}
+
+/* ---------- botões ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:12px;cursor:pointer;flex:0 0 auto;
+  background:var(--glass2);color:var(--ink);border:1px solid var(--line2);font-family:var(--ui);font-weight:600;
+  font-size:13px;letter-spacing:.3px;transition:transform .16s ease,border-color .16s,box-shadow .16s,background .16s,color .16s;
+}
+.btn i.ic{width:16px;height:16px}
+.btn:hover{border-color:rgba(0,230,118,.5);transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,230,118,.13);color:#fff}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green2));color:var(--navy);border-color:transparent;
+  box-shadow:0 10px 30px rgba(0,230,118,.32);font-weight:800}
+.btn-primary:hover{box-shadow:0 14px 40px rgba(0,230,118,.44);color:#052914}
+.btn.on{border-color:rgba(0,230,118,.7);color:var(--green);box-shadow:0 0 0 1px rgba(0,230,118,.3) inset}
+.btn-xs{padding:6px 11px;font-size:11.5px;border-radius:9px}
+.btn-xs i.ic{width:13px;height:13px}
+.btn-icon{width:36px;height:36px;padding:0;justify-content:center;border-radius:11px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+
+/* ---------- controlos ---------- */
+#controls{
+  margin:18px 0 6px;padding:14px 18px;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  display:flex;flex-direction:column;gap:11px;position:sticky;top:79px;z-index:40
+}
+.ctrl-row{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.ctrl-label{font-family:var(--mono);font-size:9.5px;letter-spacing:2.6px;color:var(--faint);flex:0 0 84px;padding-top:9px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;flex:1 1 auto}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;cursor:pointer;
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.7px;color:var(--dim);
+  background:rgba(233,245,239,.045);border:1px solid var(--line2);transition:all .16s ease;
+}
+.chip i.ic{width:13px;height:13px}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.chip:hover{color:var(--ink);border-color:rgba(0,230,118,.4);background:rgba(0,230,118,.06)}
+.chip.on{background:linear-gradient(135deg,var(--green),var(--green2));color:var(--navy);border-color:transparent;
+  box-shadow:0 4px 18px rgba(0,230,118,.34);font-weight:800}
+.chip.on .dot{background:var(--navy)}
+.chip small{font-weight:500;opacity:.65;font-size:9.5px}
+.seg{display:inline-flex;background:rgba(233,245,239,.05);border:1px solid var(--line2);border-radius:11px;padding:3px;gap:3px}
+.seg button{padding:7px 13px;border-radius:8px;border:0;cursor:pointer;background:transparent;color:var(--dim);
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.6px;transition:all .15s}
+.seg button.on{background:var(--green);color:var(--navy);box-shadow:0 3px 12px rgba(0,230,118,.34)}
+.seg button:not(.on):hover{color:var(--ink)}
+.input{flex:1 1 200px;min-width:170px;padding:9px 14px;border-radius:11px;border:1px solid var(--line2);
+  background:rgba(8,11,17,.6);color:var(--ink);font-size:12.5px;letter-spacing:.4px;font-family:var(--mono)}
+.input::placeholder{color:var(--faint)}
+.input:focus{outline:none;border-color:rgba(0,230,118,.55);box-shadow:0 0 0 3px rgba(0,230,118,.13)}
+#count{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:1.6px;margin-left:auto;padding-top:9px;text-align:right}
+
+/* ---------- grelha ---------- */
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:18px;margin-top:18px}
+#grid.compact{grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+.card{
+  border-radius:var(--r);border:1px solid var(--line2);background:var(--glass);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:12px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;
+  transition:transform .18s ease,border-color .18s,box-shadow .18s;
+}
+.card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s;
+  background:linear-gradient(158deg,rgba(0,230,118,.08),transparent 40%)}
+.card:hover{transform:translateY(-5px);border-color:rgba(0,230,118,.5);
+  box-shadow:0 26px 56px rgba(0,0,0,.5),0 0 0 1px rgba(0,230,118,.16),0 18px 60px rgba(0,230,118,.1)}
+.card:hover::before{opacity:1}
+.card-top{display:flex;align-items:center;gap:8px}
+.card-id{font-family:var(--mono);font-size:10px;letter-spacing:1.4px;color:var(--faint)}
+.card-tags{display:flex;gap:5px;margin-left:auto;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:6px;
+  color:var(--navy);background:linear-gradient(135deg,var(--green),var(--cyan));white-space:nowrap}
+.tag.lay{background:linear-gradient(135deg,var(--gold),#FFD27A)}
+.tag.segT{background:rgba(233,245,239,.08);color:var(--dim);font-weight:600;border:1px solid var(--line2)}
+.card-pillar{font-family:var(--mono);font-size:9px;letter-spacing:1.2px;color:var(--dim);display:inline-flex;align-items:center;gap:5px}
+.card-pillar .dot{width:6px;height:6px;border-radius:50%}
+.card-stage{position:relative;border-radius:13px;overflow:hidden;background:var(--navy2);border:1px solid rgba(233,245,239,.07)}
+.card-stage canvas{display:block;width:100%;height:auto;opacity:0;transition:opacity .5s}
+.card-stage canvas.ready{opacity:1}
+.loop-tag{position:absolute;top:9px;left:9px;font-family:var(--mono);font-size:8.5px;letter-spacing:1.8px;color:var(--navy);
+  background:var(--cyan);padding:4px 7px;border-radius:6px;font-weight:800;display:none;z-index:2}
+.card[data-anim="1"] .loop-tag{display:block}
+.pinned{position:absolute;top:12px;right:12px;z-index:3;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;
+  background:rgba(0,240,255,.9);color:var(--navy);opacity:0;transform:scale(.7);transition:all .18s}
+.card.is-pinned .pinned{opacity:1;transform:none}
+.card-title{font-weight:700;font-size:13.5px;letter-spacing:.1px;line-height:1.32;min-height:2.55em}
+.card-sub{font-size:11.5px;color:var(--dim);line-height:1.4;font-family:var(--mono);min-height:2.4em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#grid.compact .card-sub,#grid.compact .card-title{display:none}
+#grid.compact .card{padding:8px;gap:7px}
+#grid.compact .card-actions .btn:nth-child(-n+2){display:none}
+.card-actions{display:flex;gap:6px;margin-top:auto}
+.card-actions .btn{flex:1;justify-content:center;padding:8px 5px;font-size:11px;border-radius:9px}
+.card-actions .btn i.ic{width:13px;height:13px}
+.card-empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--dim);font-family:var(--mono);
+  font-size:12px;letter-spacing:2px;border:1px dashed var(--line2);border-radius:var(--r)}
+
+/* ---------- pinned bar ---------- */
+#pinnedBar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(140%);z-index:70;
+  display:flex;align-items:center;gap:10px;padding:10px 12px 10px 18px;border-radius:999px;
+  background:var(--glass2);border:1px solid rgba(0,240,255,.4);box-shadow:0 20px 50px rgba(0,0,0,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:transform .28s cubic-bezier(.2,.9,.3,1.1)}
+#pinnedBar.show{transform:translateX(-50%) translateY(0)}
+#pinnedBar span{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;color:var(--cyan)}
+
+/* ---------- footer ---------- */
+#foot{margin-top:44px;padding:20px 4px;border-top:1px solid var(--line2);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:2.4px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#foot a{color:var(--dim);text-decoration:none} #foot a:hover{color:var(--green)}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:rgba(3,5,9,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;pointer-events:none;transition:opacity .22s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-box{position:relative;width:100%;max-width:1240px;max-height:94vh;overflow:hidden;border-radius:22px;
+  border:1px solid rgba(0,230,118,.25);background:var(--glass2);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:var(--shadow);display:grid;grid-template-columns:1.04fr .96fr}
+.m-close{position:absolute;top:13px;right:13px;z-index:5;background:rgba(8,11,17,.75)}
+.m-nav{position:absolute;top:13px;right:58px;z-index:5;display:flex;gap:6px;background:rgba(8,11,17,.6);
+  padding:3px;border-radius:12px;border:1px solid var(--line2)}
+.m-stage{padding:24px;display:flex;flex-direction:column;gap:13px;align-items:center;justify-content:center;min-height:560px;
+  background:radial-gradient(720px 520px at 50% 0%,rgba(0,230,118,.08),transparent 62%),var(--navy);
+  border-right:1px solid var(--line2)}
+.m-stage canvas{max-width:100%;max-height:74vh;width:auto;height:auto;border-radius:12px;
+  box-shadow:0 32px 84px rgba(0,0,0,.6);background:#000}
+.m-stage-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:center}
+.m-side{padding:24px 24px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.m-meta{display:flex;gap:7px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;font-weight:700;color:var(--green);
+  border:1px solid rgba(0,230,118,.35);background:rgba(0,230,118,.08);padding:5px 9px;border-radius:7px}
+.badge.gold{color:var(--gold);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.08)}
+.badge.cyan{color:var(--cyan);border-color:rgba(0,240,255,.35);background:rgba(0,240,255,.07)}
+.badge.dim{color:var(--dim);border-color:var(--line2);background:rgba(233,245,239,.04)}
+.m-side h2{font-family:var(--disp);font-weight:800;font-size:clamp(17px,2.2vw,24px);line-height:1.2;color:#fff}
+.m-sub{color:var(--dim);font-size:14px;line-height:1.5}
+.m-actions{display:flex;gap:8px;flex-wrap:wrap}
+.m-upload{display:flex;flex-direction:column;gap:8px}
+.drop{border:1.5px dashed rgba(0,230,118,.35);border-radius:14px;padding:15px;display:flex;gap:13px;align-items:center;
+  cursor:pointer;transition:all .16s;background:rgba(0,230,118,.03)}
+.drop:hover,.drop.over{border-color:var(--green);background:rgba(0,230,118,.09)}
+.drop i.ic{width:24px;height:24px;color:var(--green)}
+.drop p{font-size:12.5px;color:var(--ink);line-height:1.45}
+.drop p span{color:var(--green);font-weight:700}
+.drop small{color:var(--faint);font-size:9px;letter-spacing:1.4px;font-family:var(--mono)}
+.m-block{display:flex;flex-direction:column;gap:7px}
+.m-block-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.m-block-h span{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--faint);font-weight:700}
+.pre{white-space:pre-wrap;font-family:var(--mono);font-size:11.5px;line-height:1.62;color:rgba(233,245,239,.86);
+  background:rgba(8,11,17,.65);border:1px solid var(--line2);border-radius:12px;padding:13px 15px;max-height:168px;overflow:auto}
+.pre.prompt{color:#AFF5CE} .pre.alt{color:#FFD9A0}
+
+/* ---------- progresso ---------- */
+.prog-box{max-width:480px;display:flex;flex-direction:column;gap:15px;padding:32px;text-align:center}
+.prog-box h3{font-family:var(--mono);font-size:10.5px;letter-spacing:2.6px;color:var(--green);font-weight:700}
+.prog-box p{font-size:11px;color:var(--dim);letter-spacing:1.4px}
+.bar{height:10px;border-radius:99px;background:rgba(233,245,239,.08);overflow:hidden;border:1px solid var(--line2)}
+.bar div{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--cyan));
+  transition:width .18s ease;box-shadow:0 0 16px rgba(0,230,118,.5)}
+#progPct{font-family:var(--disp);font-weight:800;font-size:30px;color:#fff}
+
+/* ---------- toasts ---------- */
+#toasts{position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:9px;max-width:340px}
+.toast{display:flex;gap:10px;align-items:flex-start;padding:12px 15px;border-radius:13px;background:var(--glass2);
+  border:1px solid rgba(0,230,118,.4);box-shadow:0 18px 50px rgba(0,0,0,.5);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:12.5px;font-weight:600;
+  animation:tin .3s cubic-bezier(.2,.9,.3,1.2)}
+.toast .tk{width:21px;height:21px;flex:0 0 auto;border-radius:7px;display:grid;place-items:center;
+  background:var(--green);color:var(--navy);font-weight:900;font-size:11px}
+.toast.warn{border-color:rgba(245,158,11,.5)} .toast.warn .tk{background:var(--gold)}
+.toast.out{opacity:0;transform:translateX(30px);transition:all .3s}
+@keyframes tin{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+
+/* ---------- responsivo ---------- */
+@media (max-width:1080px){
+  #hero{grid-template-columns:1fr} .hero-stats{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:960px){
+  .modal-box{grid-template-columns:1fr;overflow-y:auto}
+  .m-stage{border-right:0;border-bottom:1px solid var(--line2);min-height:auto;padding:18px}
+  .m-stage canvas{max-height:54vh} .m-side{overflow:visible}
+  #controls{position:static}
+}
+@media (max-width:640px){
+  #app{padding:0 13px 34px} #topbar{margin:0 -13px;padding-left:13px;padding-right:13px}
+  .brand-text h1{font-size:16px} .ctrl-label{flex-basis:100%;padding-top:0} #count{margin-left:0;text-align:left}
+  .hero-stats{grid-template-columns:1fr} #grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+  .card-title,.card-sub{display:none} .card-actions .btn:nth-child(-n+2){display:none}
+  #pinnedBar{width:calc(100% - 26px);justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><i class="ic" data-icon="bolt"></i></div>
+      <div class="brand-text">
+        <h1>ExMe <span>Post Studio</span></h1>
+        <p>90 PUBLICAÇÕES PHYGITAL · FEED 4:5 · STORY 9:16 · PT-PT</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="btnCalendar" class="btn" title="Calendário editorial sugerido (CSV)"><i class="ic" data-icon="calendar"></i><span>Calendário</span></button>
+      <button id="btnPillarZip" class="btn" title="ZIP com todos os posts do pilar filtrado"><i class="ic" data-icon="folder-down"></i><span>ZIP do pilar</span></button>
+      <button id="btnMaster" class="btn btn-primary" title="Compila o acervo completo de 90 publicações"><i class="ic" data-icon="package"></i><span>ZIP Master · 90 posts</span></button>
+    </div>
+  </header>
+
+  <section id="hero">
+    <div class="hero-copy">
+      <p class="hero-kick">ACERVO EDITORIAL · EXME · EXCHANGE MADE EASY</p>
+      <h2>Noventa posts, <em>nenhum</em> repetido.</h2>
+      <p>Um acervo construído para ir direto para o Instagram e para o TikTok: 13 layouts de arte, 8 paletas,
+      10 segmentos de tom e 90 peças com copy única. Nenhuma etiqueta interna, nenhum número de série, nenhum nome de
+      arquétipo na arte — só o que o colecionador precisa de ver.</p>
+      <div class="hero-list">
+        <span>FEED 1080×1350</span><span>STORY 1080×1920</span><span>PNG 2× + SVG SEMÂNTICO</span>
+        <span>LEGENDA + ALT + PROMPT</span><span>ZIP POR PILAR OU ACERVO</span>
+      </div>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+  </section>
+
+  <section id="controls">
+    <div class="ctrl-row">
+      <span class="ctrl-label">PILARES</span>
+      <div id="chipsPillar" class="chips"></div>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">LAYOUTS</span>
+      <div id="chipsLay" class="chips"></div>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">SEGMENTOS</span>
+      <div id="chipsSeg" class="chips"></div>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">FORMATO</span>
+      <div class="seg" id="segFmt">
+        <button data-fmt="feed" class="on">FEED 4:5</button>
+        <button data-fmt="story">STORY 9:16</button>
+      </div>
+      <div class="seg" id="segDens" title="Densidade da grelha">
+        <button data-d="comfort" class="on">CONFORTO</button>
+        <button data-d="compact">CONTACT SHEET</button>
+      </div>
+      <input id="q" class="input" type="search" placeholder="procurar: clube, título, palavra da legenda…" aria-label="Procurar posts"/>
+      <span id="count"></span>
+    </div>
+  </section>
+
+  <main id="grid" aria-live="polite"></main>
+
+  <footer id="foot">
+    <span>EXME · EXCHANGE MADE EASY · EXME.CLUB</span>
+    <span>ARTE SEM ETIQUETAS INTERNAS · LEGENDA PT-PT · PROMPTS MIDJOURNEY/FLUX</span>
+  </footer>
+</div>
+
+<!-- MODAL DE DETALHE -->
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-label="Detalhe do post">
+  <div class="modal-box">
+    <button id="mClose" class="btn btn-icon m-close" aria-label="Fechar"><i class="ic" data-icon="x"></i></button>
+    <div class="m-nav">
+      <button id="mPrev" class="btn btn-icon" aria-label="Post anterior"><i class="ic" data-icon="chev-l"></i></button>
+      <button id="mNext" class="btn btn-icon" aria-label="Post seguinte"><i class="ic" data-icon="chev-r"></i></button>
+    </div>
+    <div class="m-stage">
+      <canvas id="mCanvas"></canvas>
+      <div class="m-stage-bar">
+        <div class="seg" id="mSegFmt">
+          <button data-fmt="feed" class="on">FEED</button>
+          <button data-fmt="story">STORY</button>
+        </div>
+        <div class="seg" id="mSegPal" title="Trocar de paleta em tempo real">
+          <button data-pal="keep" class="on">PALETA ORIGINAL</button>
+          <button data-pal="alt" title="Alternar claro/escuro">CLARO ⇄ ESCURO</button>
+        </div>
+        <button id="mAnim" class="btn btn-xs" title="Ver a animação em loop (stories/reels)"><i class="ic" data-icon="play"></i><span>animação</span></button>
+      </div>
+    </div>
+    <div class="m-side">
+      <div class="m-meta">
+        <span class="badge" id="mId">—</span>
+        <span class="badge cyan" id="mLay">—</span>
+        <span class="badge gold" id="mPillar">—</span>
+        <span class="badge dim" id="mSeg">—</span>
+        <span class="badge dim" id="mPal">—</span>
+      </div>
+      <h2 id="mTitle">—</h2>
+      <p id="mSub" class="m-sub"></p>
+      <div class="m-actions">
+        <button id="mPng" class="btn btn-primary"><i class="ic" data-icon="download"></i><span>PNG 2×</span></button>
+        <button id="mSvg" class="btn"><i class="ic" data-icon="vector"></i><span>SVG</span></button>
+        <button id="mZip" class="btn"><i class="ic" data-icon="archive"></i><span>ZIP do post</span></button>
+      </div>
+      <div class="m-upload">
+        <div id="drop" class="drop" role="button" tabindex="0" aria-label="Carregar foto">
+          <i class="ic" data-icon="upload"></i>
+          <p>Arrasta uma foto para aqui <span>ou clica para escolher</span><br/>
+          <small>SUBSTITUI A FOTO DA ARTE EM TEMPO REAL</small></p>
+        </div>
+        <button id="mReset" class="btn btn-xs"><i class="ic" data-icon="rotate"></i><span>Restaurar foto original</span></button>
+      </div>
+      <div class="m-block">
+        <div class="m-block-h"><span>LEGENDA · PT-PT</span><button id="mCopyCap" class="btn btn-xs"><i class="ic" data-icon="copy"></i><span>copiar</span></button></div>
+        <pre id="mCap" class="pre"></pre>
+      </div>
+      <div class="m-block">
+        <div class="m-block-h"><span>PRIMEIRO COMENTÁRIO + ALT</span><button id="mCopyAlt" class="btn btn-xs"><i class="ic" data-icon="copy"></i><span>copiar</span></button></div>
+        <pre id="mAlt" class="pre alt"></pre>
+      </div>
+      <div class="m-block">
+        <div class="m-block-h"><span>IMAGE PROMPT · MIDJOURNEY V6 / FLUX.1</span><button id="mCopyPr" class="btn btn-xs"><i class="ic" data-icon="copy"></i><span>copiar</span></button></div>
+        <pre id="mPr" class="pre prompt"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE PROGRESSO -->
+<div id="prog" class="modal" role="dialog" aria-modal="true" aria-label="Progresso da exportação">
+  <div class="modal-box prog-box">
+    <h3 id="progLabel">A COMPILAR…</h3>
+    <div class="bar"><div id="progBar"></div></div>
+    <p id="progPct">0%</p>
+    <p id="progItem" class="f-mono" style="font-size:9.5px;color:var(--faint)"></p>
+  </div>
+</div>
+
+<div id="pinnedBar">
+  <span id="pinnedCount">0 SELECIONADOS</span>
+  <button id="btnPinZip" class="btn btn-primary btn-xs"><i class="ic" data-icon="archive"></i><span>ZIP da seleção</span></button>
+  <button id="btnPinClear" class="btn btn-xs"><i class="ic" data-icon="close"></i><span>limpar</span></button>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+<input id="file" type="file" accept="image/*" hidden/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
