@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="description" content="ExMe Post Studio — gerador, customizador e exportador em lote de 60 publicações phygital (feed 4:5 e story 9:16) para a ExMe · Exchange Made Easy."/>
-<title>ExMe Post Studio — 60 Publicações Phygital</title>
+<meta name="description" content="ExMe Post Studio — gerador, customizador e exportador em lote de 100 publicações phygital (feed 4:5 e story 9:16) para a ExMe · Exchange Made Easy."/>
+<title>ExMe Post Studio — 100 Publicações Phygital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -63,7 +63,16 @@ body{
 .brand-text h1{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:.4px;color:#fff}
 .brand-text h1 span{color:var(--green)}
 .brand-text p{font-size:10.5px;letter-spacing:2.2px;color:var(--dim);margin-top:3px}
-.top-actions{display:flex;gap:10px;flex-wrap:wrap}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.engine-status{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(0,240,255,.2);border-radius:10px;background:rgba(0,240,255,.045);color:var(--faint);font:700 9px var(--mono);letter-spacing:1.2px;white-space:nowrap}
+.engine-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px currentColor;animation:gpuPulse 1.5s ease-in-out infinite}
+.engine-status[data-engine="webgpu"]{color:var(--cyan);border-color:rgba(0,240,255,.42);background:rgba(0,240,255,.08)}
+.engine-status[data-engine="webgpu"] .engine-dot{background:var(--cyan)}
+.engine-status[data-engine="webgl"]{color:var(--green);border-color:rgba(0,230,118,.32);background:rgba(0,230,118,.06)}
+.engine-status[data-engine="webgl"] .engine-dot{background:var(--green)}
+.engine-status[data-engine="canvas"]{color:var(--gold);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.06)}
+.engine-status[data-engine="canvas"] .engine-dot{background:var(--gold)}
+@keyframes gpuPulse{0%,100%{opacity:.5;transform:scale(.85)}50%{opacity:1;transform:scale(1.18)}}
 
 /* ---------- botões ---------- */
 .btn{
@@ -266,12 +275,13 @@ body{
       <div class="brand-mark"><i data-lucide="zap"></i></div>
       <div class="brand-text">
         <h1>ExMe <span>Post Studio</span></h1>
-        <p class="f-mono">60 PUBLICAÇÕES PHYGITAL · FEED 4:5 · STORY 9:16 · PT-PT</p>
+        <p class="f-mono">100 PUBLICAÇÕES PHYGITAL · FEED 4:5 · STORY 9:16 · PT-PT</p>
       </div>
     </div>
     <div class="top-actions">
+      <span id="engineStatus" class="engine-status" title="Renderização progressiva: WebGPU/WGSL, WebGL ou Canvas"><span class="engine-dot"></span><span>A PREPARAR GPU</span></span>
       <button id="btnPillarZip" class="btn" title="Exporta em ZIP todos os posts do pilar filtrado"><i data-lucide="folder-down"></i><span>ZIP do pilar</span></button>
-      <button id="btnMaster" class="btn btn-primary" title="Compila o acervo completo de 60 publicações"><i data-lucide="package"></i><span>ZIP Master · 60 posts</span></button>
+      <button id="btnMaster" class="btn btn-primary" title="Compila o acervo completo de 100 publicações"><i data-lucide="package"></i><span>ZIP Master · 100 posts</span></button>
     </div>
   </header>
 
@@ -372,10 +382,10 @@ body{
 "use strict";
 /* ================================================================
    EXME POST STUDIO — motor completo
-   0. Utilitários   1. Dados de marca   2. Catálogo paramétrico (60 posts)
-   3. Motor de cena + arquétipos A-F   4. Renderers (Canvas + SVG)
+   0. Utilitários   1. Dados de marca   2. Catálogo paramétrico (100 posts)
+   3. Motor de cena + arquétipos A-J   4. Renderers (Canvas + SVG)
    5. UI (grelha, modal, upload)   6. Exportação (PNG/SVG/ZIP)
-   7. Fundo Three.js   8. Boot
+   7. WebGPU/WGSL + fallback Three.js   8. Boot
    ================================================================ */
 
 /* ============ 0. UTILITÁRIOS ============ */
@@ -432,9 +442,13 @@ const ARCHS={
  C:{letter:'C',label:'Big Metric / Smart Trade',prompt:'Minimal stadium backdrop, vast negative space for typography, floodlight flare, deep green field tones, wide 24mm shot.'},
  D:{letter:'D',label:'Social Proof & Quote',prompt:'Candid documentary portrait, community club ambience, warm genuine faces, evening light, 35mm f/1.4.'},
  E:{letter:'E',label:'Kinetic Typo & Match',prompt:'High-energy matchday atmosphere, motion blur, stadium floodlights beaming, crowd bokeh, punchy contrast, 70-200mm f/2.8.'},
- F:{letter:'F',label:'Carrossel Contínuo',prompt:'Clean narrative triptych feel, stadium and locker-room textures, clear storyboard beats, hyper-realistic, 50mm.'}
+  F:{letter:'F',label:'Carrossel Contínuo',prompt:'Clean narrative triptych feel, stadium and locker-room textures, clear storyboard beats, hyper-realistic, 50mm.'},
+  G:{letter:'G',label:'Liquid Chrome SDF',prompt:'Procedural liquid chrome sculpture made with signed distance fields, inflated metallic surfaces, mercury reflections, impossible soft geometry, deep navy studio, electric green and cyan highlights, no readable text.'},
+  H:{letter:'H',label:'Fluid Bloom / Domain Warp',prompt:'Abstract procedural fluid bloom generated with domain warping and fractal Brownian motion, organic ink currents, translucent emerald and cyan, premium editorial composition, no repeated texture.'},
+  I:{letter:'I',label:'CRT Halftone Signal',prompt:'Experimental sports communication poster with GPU CRT phosphor, halftone dithering, pixel sorting trails, Bayer matrix texture, vivid green and amber signal on near-black, crisp type-safe negative space.'},
+  J:{letter:'J',label:'Orbital Data Sculpture',prompt:'Generative orbital data sculpture, luminous rings and particles around a precise central object, editorial information design, calm mathematical rhythm, navy space, electric green and warm gold.'}
 };
-const ARCH_ORDER=['A','B','C','D','E','F'];
+const ARCH_ORDER=['A','B','C','D','E','F','G','H','I','J'];
 const BASE_TAGS=['#ExMe','#CromosDigitais','#FutebolDeFormação','#CadernetaDeCromos'];
 const CTAS=[
  '⚡ Descarrega a app ExMe na App Store ou Google Play e abre a tua primeira saqueta hoje.',
@@ -443,10 +457,10 @@ const CTAS=[
  '⚽ A caça ao cromo perfeito começa na app: descarrega a ExMe na App Store ou Google Play.'
 ];
 
-/* ============ 2. CATÁLOGO PARAMÉTRICO — 5 pilares × 6 arquétipos × 2 variantes = 60 ============ */
+/* ============ 2. CATÁLOGO PARAMÉTRICO — 5 pilares × 10 arquétipos × 2 variantes = 100 ============ */
 const CAT={
 A:[ /* --- CROMO HERO CARD --- */
- {p:1,v:0,k:'CROMO 001 · CAPITÃO DE FORMAÇÃO',t:'Capitão de Formação',img:'action',h:'O cromo 001 já tem dono. 🔥',b:'A nova caderneta digital do {club} abre com o capitão dos {esc}: exemplo no relvado, líder no balneário. Abre saquetas na app e persegue o teu primeiro cromo oficial.',pj:'Young football captain in green and black striped kit holding the match ball high, determined expression, teammates blurred behind'},
+ {p:1,v:0,k:'CROMO 001 · CAPITÃO DE FORMAÇÃO',t:'Capitão de Formação',img:'action',h:'O primeiro cromo já tem dono. 🔥',b:'A nova caderneta digital do {club} abre com o capitão dos {esc}: exemplo no relvado, líder no balneário. Abre saquetas na app e persegue o teu primeiro cromo oficial.',pj:'Young football captain in green and black striped kit holding the match ball high, determined expression, teammates blurred behind'},
  {p:1,v:1,k:'CROMO LIMITADO · FOIL DOURADO',t:'Joia da Formação',img:'nightAction',h:'Um cromo foil dourado por época. Só cai em saquetas abertas no dia do lançamento.',b:'O {club} entra no universo ExMe com um cromo limitado que celebra os escalões de formação. Ao completares 100% na app, a caderneta física chega impressa à tua casa.',pj:'Rare golden foil football sticker card, young academy player silhouette under dramatic golden rim light'},
  {p:2,v:0,k:'SMART MATCH · TROCA FECHADA',t:'Adeus Repetidos',img:'goalball',h:'A gaveta dos repetidos está oficialmente reformada. 🔒',b:'O Smart Match cruza a tua coleção com a de milhares de colecionadores e fecha trocas justas em segundos. Sem deslocações nem súplicas: só cromos a entrar para a caderneta.',pj:'Open drawer overflowing with duplicate football stickers, dramatic single spotlight, dark locker room'},
  {p:2,v:1,k:'MERCADO DE TROCAS · RARIDADE',t:'Raro à Vista',img:'lights',h:'O cromo que ninguém dá… aparece-te no Smart Match. ✨',b:'Algoritmo, não sorte. Quando um cromo raro do {club} entra no circuito de trocas, o Smart Match avisa quem precisa dele. Liga as notificações e vai à caça.',pj:'Glowing rare holographic football card floating above an open hand, electric light trails, dark stadium background'},
@@ -516,9 +530,59 @@ F:[ /* --- CARROSSEL CONTÍNUO --- */
  {p:4,v:1,fk:'GUIA RÁPIDO · VALORIZAÇÃO',ft:'Do treino de quarta ao cromo oficial',steps:[['O clube entra na app','Coleção oficial com emblema e cores.'],['Atletas ganham cromos','Os protagonistas dos escalões eternizados.'],['O nome do clube cresce','Comunidade unida dentro e fora do relvado.']],img:'action',h:'Como se valoriza um atleta de formação? Com cromo oficial. 🏅',b:'Cada jovem do {club} pode ver o seu momento eternizado em cromo. As famílias colecionam, o clube cresce e a formação ganha o palco que merece.',pj:'Young player striking a ball powerfully, grass flying, low angle, backlit'},
  {p:5,v:0,fk:'GUIA RÁPIDO · DESAFIO',ft:'O desafio de família ExMe',steps:[['Desafio lançado','Cada elemento adota uma caderneta.'],['Cada um traz cromos','Trocas na app e no tapete da sala.'],['Caderneta completa','Vencedor anunciado ao jantar.']],img:'kids2',h:'Desafio de família: quem completa a caderneta primeiro? 🏆',b:'Regras simples: uma caderneta cada, uma semana de prazo, proibido trocar com o adversário direto. O prémio? Escolher o cromo da moldura da sala.',pj:'Family competitively but happily laying out football stickers on a living room floor'},
  {p:5,v:1,fk:'GUIA RÁPIDO · SÁBADO',ft:'Um sábado de colecionador',steps:[['Sábado de manhã','Jogo dos {esc} no relvado do clube.'],['Trocas no balneário','Repetidos mudam de mãos e de app.'],['Tarde de saquetas','A caderneta enche antes do jantar.']],img:'pitch',h:'O sábado perfeito de um colecionador ExMe. ⚽',b:'Jogo de manhã, trocas no balneário, saquetas à tarde. É o fim de semana que a app tornou rotina nas famílias do {club} — e que ninguém quer perder.',pj:'Sunday league morning match at a community club, parents on the touchline, warm sun'}
-]};
+],
+G:[ /* --- LIQUID CHROME / SDF --- */
+ {p:1,v:0,t:'A época começa em metal',img:'stadium',h:'O primeiro brilho é teu. ✨',b:'A nova época do {club} ganha uma coleção com presença: cromos oficiais, reflexos de metal líquido e todos os escalões de formação dentro da mesma caderneta.',pj:'Liquid chrome football crest melting into a polished sticker card above a floodlit community stadium, emerald and cyan reflections',chrome:{word:'COMEÇA',note:'uma nova época',tone:'#00E676'}},
+ {p:1,v:1,t:'Uma geração em estado líquido',img:'kids',h:'Talento jovem. Acabamento impossível de ignorar.',b:'Do primeiro treino ao jogo grande, cada atleta do {club} fica guardado numa peça que parece sair do futuro — digital para colecionar, física para exibir.',pj:'Inflated liquid chrome football boot and young academy silhouette, soft mercury reflections, deep navy studio, green rim light',chrome:{word:'GERAÇÃO',note:'talento em movimento',tone:'#00F0FF'}},
+ {p:2,v:0,t:'Troca que vale ouro',img:'lights',h:'Quando o raro aparece, a coleção muda de estado. 💫',b:'O Smart Match encontra a pessoa certa para o teu repetido mais cobiçado. Uma troca justa, um brilho raro e a sensação de ter encontrado a peça que faltava.',pj:'Mercury football sticker with a gold liquid core orbiting above a dark stadium, high specular reflections, elegant premium composition',chrome:{word:'VALE',note:'ouro para quem coleciona',tone:'#F59E0B'}},
+ {p:2,v:1,t:'O raro encontra o certo',img:'goalball',h:'Há cromos que não se procuram. Encontram-te.',b:'Liga o Smart Match e deixa a inteligência da comunidade fazer o cruzamento. O teu cromo raro pode estar a uma troca de distância, não de sorte.',pj:'Two liquid chrome football cards magnetically attracted with a bright cyan bridge, black background, dramatic highlights',chrome:{word:'ENCONTRA',note:'o teu par certo',tone:'#00F0FF'}},
+ {p:3,v:0,t:'Abre. Vê. Guarda.',img:'net',h:'Uma saqueta digital com peso de objeto.',b:'O brilho nasce no ecrã, o cromo entra na coleção e o álbum físico espera no fim do caminho. A experiência ExMe junta o gesto de hoje ao objeto de amanhã.',pj:'Inflated chrome sticker pack opening over a football goal net at night, molten emerald light spilling out, premium 3D render',chrome:{word:'ABRE',note:'e deixa cair o brilho',tone:'#00E676'}},
+ {p:3,v:1,t:'A coleção ganha volume',img:'fog',h:'Completar também é uma forma de criar matéria.',b:'Cada cromo digital aproxima a tua coleção de uma peça física com textura, brilho e lugar na estante. O 100% deixa de ser contador: torna-se objeto.',pj:'Stack of tactile liquid chrome football albums on a misty pitch, sculptural folds, warm gold highlights, gallery lighting',chrome:{word:'VOLUME',note:'para uma coleção que fica',tone:'#F59E0B'}},
+ {p:4,v:0,t:'Talento com acabamento',img:'action2',h:'A formação merece uma peça à altura.',b:'O {club} dá palco aos atletas dos escalões de formação com cromos oficiais que as famílias querem guardar. Visibilidade para quem constrói o futuro todos os dias.',pj:'Young footballer as a sculptural liquid chrome portrait card, stadium lights reflected on metal, dignified editorial sports portrait',chrome:{word:'TALENTO',note:'merece ficar à vista',tone:'#00E676'}},
+ {p:4,v:1,t:'O clube deixa marca',img:'trophy',h:'Uma época pode caber numa superfície espelhada.',b:'Cromos, momentos e emblema do {club}: uma linguagem de coleção que transforma a história da formação em algo que se segura, troca e oferece.',pj:'Liquid chrome club emblem and football trophy floating over a youth team celebration, sculptural premium campaign image',chrome:{word:'MARCA',note:'história que se segura',tone:'#00F0FF'}},
+ {p:5,v:0,t:'O objeto que passa de mão',img:'huddle',h:'A melhor coleção não fica fechada numa gaveta.',b:'Passa o telemóvel, troca o cromo, mostra o álbum. A ExMe cria peças para circular entre amigos, irmãos e avós — porque colecionar é uma conversa.',pj:'Hands passing a reflective liquid chrome football card between generations, warm locker room light, intimate editorial still',chrome:{word:'PASSA',note:'de mão em mão',tone:'#10E868'}},
+ {p:5,v:1,t:'Cromo para pôr à vista',img:'dusk',h:'Há peças que pedem moldura. 🖼️',b:'A tua caderneta não é só uma lista completa: é um retrato da época que viveste. Escolhe o favorito, guarda-o perto e deixa a conversa começar.',pj:'Single liquid chrome football sticker framed like a gallery artwork on a home wall, sunset reflections, sophisticated minimalism',chrome:{word:'À VISTA',note:'o favorito da coleção',tone:'#F59E0B'}}
+],
+H:[ /* --- FLUID BLOOM / DOMAIN WARP --- */
+ {p:1,v:0,t:'A formação ganha cor',img:'kids2',h:'Uma época inteira a nascer diante dos teus olhos.',b:'Cores que se misturam, equipas que crescem, cromos que aparecem. A caderneta do {club} dá forma à energia dos escalões e leva-a para a app.',pj:'Emerald and cyan ink bloom flowing around silhouettes of youth football players, organic procedural fluid, dark studio',fluid:{word:'COR',note:'que cresce em equipa',tone:'#00E676'}},
+ {p:1,v:1,t:'O campo depois da chuva',img:'pitch',h:'Cada treino deixa uma onda.',b:'O relvado guarda marcas, a comunidade guarda histórias. Abre a app e acompanha a formação do {club} numa coleção viva, sempre a ganhar novas camadas.',pj:'Topographic green fluid landscape turning into a football pitch, cyan streams, atmospheric domain-warped procedural art',fluid:{word:'ONDA',note:'depois de cada treino',tone:'#00F0FF'}},
+ {p:2,v:0,t:'Mistura certa',img:'grass',h:'Repetidos fora. Espaço novo dentro.',b:'O Smart Match mistura coleções até encontrar a combinação certa. O resultado não é ruído: é uma troca que devolve movimento à tua caderneta.',pj:'Two flowing ink streams merging into one emerald football card, organic fluid simulation, precise central meeting point',fluid:{word:'MISTURA',note:'sem perder o equilíbrio',tone:'#00F0FF'}},
+ {p:2,v:1,t:'A troca abre caminho',img:'nightPitch',h:'Quando um cromo sai, outro lugar aparece.',b:'A tua coleção não precisa de acumular. Deixa os repetidos seguir caminho e usa a comunidade para chegar aos cromos que ainda fazem falta.',pj:'Fluid river of neon green and gold splitting into paths around floating football stickers, dark cinematic composition',fluid:{word:'CAMINHO',note:'para o próximo cromo',tone:'#F59E0B'}},
+ {p:3,v:0,t:'Papel, luz, memória',img:'seats',h:'O digital também pode ter textura.',b:'Na app, a caderneta reage ao teu toque. Em casa, o álbum devolve papel, relevo e a memória de uma época inteira. Dois mundos, uma coleção.',pj:'Translucent cyan and amber fluids flowing over a printed football album, tactile paper and glass, organic procedural art',fluid:{word:'TEXTURA',note:'que atravessa o ecrã',tone:'#F59E0B'}},
+ {p:3,v:1,t:'Completa e deixa assentar',img:'fog',h:'O 100% é o momento em que tudo encontra lugar.',b:'Quando a última peça encaixa, o ruído desaparece e fica a forma completa: a tua caderneta impressa, feita para abrir muitas vezes.',pj:'Calm emerald fluid settling into the shape of a closed football album, soft fog, premium generative editorial still',fluid:{word:'ASSENTA',note:'e fica contigo',tone:'#10E868'}},
+ {p:4,v:0,t:'Crescer é coletivo',img:'huddle',h:'Nenhum talento se forma sozinho.',b:'A parceria ExMe transforma a energia das famílias em apoio concreto para o {club}. Cada coleção ajuda a manter o trabalho invisível da formação em movimento.',pj:'Many luminous fluid currents converging behind a youth football team huddle, warm green and gold, hopeful campaign art',fluid:{word:'COLETIVO',note:'é o motor da formação',tone:'#00E676'}},
+ {p:4,v:1,t:'Um clube, muitas correntes',img:'crowd2',h:'A bancada, o balneário e a app no mesmo fluxo.',b:'Com uma caderneta oficial, o {club} aproxima quem joga, quem acompanha e quem apoia. A receita partilhada volta ao lugar onde tudo começa.',pj:'Abstract streams of light connecting stadium stands, locker room and smartphone, fluid domain warp, navy background',fluid:{word:'FLUXO',note:'que volta ao clube',tone:'#00F0FF'}},
+ {p:5,v:0,t:'A mesa junta tudo',img:'kids2',h:'Colecionar é deixar a conversa acontecer.',b:'Um cromo puxa uma história, uma troca puxa outra pessoa, um álbum reúne a família. A coleção do {club} começa na app e acaba à mesa.',pj:'Fluid ribbons of light winding around a family table covered with football stickers, warm domestic scene, generative editorial',fluid:{word:'JUNTA',note:'o que importa',tone:'#F59E0B'}},
+ {p:5,v:1,t:'Memória em movimento',img:'dusk',h:'O que fica também pode continuar a circular.',b:'As histórias da bancada mudam de mãos, mas não desaparecem. Guarda o momento na caderneta, partilha-o com quem estava lá e volta a abrir a coleção.',pj:'Soft flowing aurora of emerald, cyan and gold around an old football album, nostalgia without retro clichés, cinematic',fluid:{word:'FICA',note:'mesmo quando circula',tone:'#00E676'}}
+],
+I:[ /* --- CRT HALFTONE / PIXEL SIGNAL --- */
+ {p:1,v:0,t:'Dá play à nova época',img:'stadium',h:'A imagem treme. A bancada acorda.',b:'A nova caderneta do {club} começa com a intensidade de um dia de jogo: cromos oficiais, formação inteira e uma coleção pronta a ganhar sinal.',pj:'Experimental CRT football broadcast of a youth stadium, halftone dots, phosphor green, amber scanline glow',signal:{lines:['DÁ','PLAY'],note:'nova época',tone:'#00E676'}},
+ {p:1,v:1,t:'Do primeiro passe ao primeiro cromo',img:'action',h:'Sinal forte para quem está a começar.',b:'Os primeiros momentos também merecem arquivo. Abre a app, encontra o teu escalão e dá aos atletas do {club} o lugar de destaque que merecem.',pj:'CRT sports broadcast close-up of a young footballer taking a first touch, pixel sorting trail, vivid green signal',signal:{lines:['PRIMEIRO','PASSE'],note:'primeiro cromo',tone:'#F59E0B'}},
+ {p:2,v:0,t:'Repetido não é ruído',img:'goalball',h:'Transforma interferência em troca.',b:'O Smart Match lê o que sobra na tua coleção e encontra um sinal compatível. Menos duplicados parados, mais cromos a chegar ao lugar certo.',pj:'Pixel-sorted football sticker cards resolving from static into a clean trade arrow, CRT phosphor green and cyan',signal:{lines:['SEM','RUÍDO'],note:'troca certa',tone:'#00F0FF'}},
+ {p:2,v:1,t:'Frequência rara',img:'lights',h:'Há um brilho que só aparece uma vez.',b:'Quando um cromo raro entra na rede, a app põe a comunidade em sintonia. Liga as notificações e não percas a frequência do teu próximo achado.',pj:'Rare football sticker emerging from CRT static, amber phosphor glow, scanlines and sharp halftone, dark stadium',signal:{lines:['RARA','FREQUÊNCIA'],note:'fica atento',tone:'#F59E0B'}},
+ {p:3,v:0,t:'Abre o sinal',img:'nightAction',h:'A saqueta digital chega com ruído zero.',b:'Um toque, um brilho, um novo cromo. A app transforma o ritual de abrir uma saqueta numa imagem nítida, imediata e pronta para a tua coleção.',pj:'Glowing digital sticker pack opening like a CRT transmission, scanline burst, green and gold pixels, black field',signal:{lines:['ABRE','O SINAL'],note:'novo cromo',tone:'#00E676'}},
+ {p:3,v:1,t:'Do pixel ao papel',img:'trophy',h:'A melhor imagem ainda se pode tocar.',b:'A caderneta ganha forma no ecrã e termina em papel premium. O pixel é o começo; o álbum físico é a prova de que completaste.',pj:'Pixelated football album transitioning from CRT screen into tactile printed paper, halftone, cyan edge light',signal:{lines:['PIXEL','PAPEL'],note:'uma coleção inteira',tone:'#00F0FF'}},
+ {p:4,v:0,t:'A formação em horário nobre',img:'stadium2',h:'Mais visibilidade para quem joga longe dos holofotes.',b:'O programa ExMe dá aos atletas do {club} uma presença que viaja para além do campo. A comunidade vê, coleciona e apoia a formação.',pj:'Community youth football team on a CRT broadcast set with studio lights, premium halftone poster, green signal',signal:{lines:['EM','DESTAQUE'],note:'talento da formação',tone:'#00E676'}},
+ {p:4,v:1,t:'O clube entra em emissão',img:'nightPitch',h:'Uma nova fonte de receita entra no ar.',b:'A app, a caderneta oficial e a receita partilhada trabalham juntas. O {club} chega à comunidade com uma experiência que se vê e se mede.',pj:'Floodlit football pitch rendered as a broadcast signal, pixel sorting light trails, clean negative space, amber and green',signal:{lines:['NO','AR'],note:'receita em movimento',tone:'#F59E0B'}},
+ {p:5,v:0,t:'A bancada fala',img:'crowd',h:'Cada coleção tem a sua voz.',b:'O avô reconhece o emblema, a criança reconhece o jogador, os dois discutem o próximo cromo. A ExMe transforma conversa em memória partilhada.',pj:'Family and crowd rendered through warm CRT halftone dots in a stadium, intimate documentary broadcast aesthetic',signal:{lines:['A','BANCADA'],note:'tem voz',tone:'#00F0FF'}},
+ {p:5,v:1,t:'Guarda o momento',img:'dusk',h:'Algumas imagens merecem voltar ao ar.',b:'A tua coleção guarda mais do que nomes: guarda domingos, treinos e pessoas. Reabre a caderneta e volta ao momento sempre que quiseres.',pj:'Nostalgic football sunset broadcast with halftone phosphor, an album page held in foreground, cinematic scanlines',signal:{lines:['VOLTA','A VER'],note:'o que viveste',tone:'#F59E0B'}}
+],
+J:[ /* --- ORBITAL DATA SCULPTURE --- */
+ {p:1,v:0,t:'Tudo começa no centro',img:'stadium',h:'Uma equipa inteira a gravitar na mesma coleção.',b:'A caderneta do {club} organiza uma época de talento, escudo e histórias. Escolhe o teu centro e deixa todos os escalões encontrar a sua órbita.',pj:'Luminous orbital rings around a central football badge above a small stadium, emerald particles, precise generative data sculpture',orbit:{word:'CENTRO',note:'onde começa a coleção',tone:'#00E676'}},
+ {p:1,v:1,t:'Cada jogador, uma órbita',img:'kids',h:'A formação nunca foi uma linha reta.',b:'Há posições, ritmos e caminhos diferentes. Na app, cada cromo encontra o seu lugar e a equipa completa-se como um sistema em movimento.',pj:'Orbital data sculpture of multiple youth football player cards circling a glowing central ball, cyan and gold nodes',orbit:{word:'ÓRBITA',note:'para cada percurso',tone:'#00F0FF'}},
+ {p:2,v:0,t:'A distância certa',img:'grass',h:'Trocar bem é aproximar duas coleções.',b:'O Smart Match calcula a ligação que falta sem complicar a vida de ninguém. Uma proposta clara, uma confirmação rápida, uma coleção mais perto do centro.',pj:'Two precise orbital systems connecting through a single green exchange path, football cards as luminous nodes, dark space',orbit:{word:'LIGA',note:'o que estava distante',tone:'#00F0FF'}},
+ {p:2,v:1,t:'O raro em rota',img:'lights',h:'Segue a luz. O próximo cromo pode estar ali.',b:'A app acompanha os movimentos da comunidade e mostra quando aparece uma oportunidade rara. O mercado de trocas fica legível, não caótico.',pj:'Rare gold football card on a luminous orbital trajectory across a navy data field, green particles, elegant editorial graphic',orbit:{word:'EM ROTA',note:'o raro aproxima-se',tone:'#F59E0B'}},
+ {p:3,v:0,t:'Da órbita para a mão',img:'seats',h:'A experiência começa no ecrã e aterra em papel.',b:'Saquetas digitais fazem a coleção girar; o álbum físico dá-lhe gravidade. Completa a caderneta do {club} e guarda o sistema inteiro contigo.',pj:'Smartphone and printed football album connected by orbital rings, tactile paper, gold and cyan particles, premium studio',orbit:{word:'ATERRA',note:'na tua estante',tone:'#00E676'}},
+ {p:3,v:1,t:'Um universo para abrir',img:'fog',h:'Cada nova saqueta acrescenta uma constelação.',b:'O contador sobe, os repetidos circulam e as peças raras ficam mais próximas. A tua coleção cresce como um pequeno universo pessoal.',pj:'Constellation of football sticker cards orbiting a glossy album in mist, deep navy, emerald stars and warm gold',orbit:{word:'ABRE',note:'um universo inteiro',tone:'#00F0FF'}},
+ {p:4,v:0,t:'O clube no mapa',img:'crowd2',h:'A formação também merece coordenadas.',b:'A parceria coloca o {club} no centro das conversas da comunidade e cria um caminho mensurável entre colecionadores, famílias e receita para o clube.',pj:'Orbital map connecting a community stadium, families and youth team cards, luminous green routes, premium data visualization',orbit:{word:'NO MAPA',note:'com quem faz futuro',tone:'#00E676'}},
+ {p:4,v:1,t:'Receita que regressa',img:'trophy',h:'O movimento da comunidade volta ao relvado.',b:'Cada saqueta ajuda a financiar o trabalho de formação. A parceria ExMe fecha um circuito simples: colecionar, apoiar, fazer crescer.',pj:'Golden and green orbital flow returning from floating collector cards to a youth football pitch, optimistic data sculpture',orbit:{word:'REGRESSA',note:'ao lugar certo',tone:'#F59E0B'}},
+ {p:5,v:0,t:'Três gerações em órbita',img:'kids2',h:'A mesa é o nosso melhor sistema.',b:'Um avô conta, um pai troca, uma criança abre a saqueta. A coleção cria um campo comum onde todas as idades podem jogar.',pj:'Three generations represented as warm luminous orbital nodes around a football album on a table, intimate cinematic data art',orbit:{word:'JUNTOS',note:'na mesma mesa',tone:'#00E676'}},
+ {p:5,v:1,t:'Constelação de domingos',img:'dusk',h:'Há coleções que guardam o calendário inteiro.',b:'O jogo, o treino, a bancada e a conversa ficam ligados por cromos. Completa a tua constelação do {club} e volta a cada domingo pela memória.',pj:'Constellation of football matchday memories above a sunset pitch, orbital rings, gold stars, cinematic generative poster',orbit:{word:'DOMINGOS',note:'que ficam ligados',tone:'#F59E0B'}}
+]
 
-/* ============ 2b. GERADOR DETERMINÍSTICO DOS 60 POSTS ============ */
+};
+
+/* ============ 2b. GERADOR DETERMINÍSTICO DOS 100 POSTS ============ */
 function buildPosts(){
  const posts=[];let n=1;
  for(let p=1;p<=5;p++)for(const ak of ARCH_ORDER)for(let v=0;v<2;v++){
@@ -534,12 +598,16 @@ function buildPosts(){
   const caption=[rep(e.h),rep(e.b),pick(CTAS,r),tags.join(' ')].join('\n\n');
   const prompt=`${e.pj}. ${ARCHS[ak].prompt}\nShot on 35mm f/1.4, shallow depth of field, hyper-realistic sports photography, cinematic color grade (deep navy shadows, electric green highlights), 8k detail.\n\nFEED 1080x1350 → MJ: --ar 4:5 --style raw --v 6 · Flux: 1080x1350\nSTORY 1080x1920 → MJ: --ar 9:16 --style raw --v 6 · Flux: 1080x1920`;
   posts.push({n,id:'post-'+String(n).padStart(2,'0'),pillar:p,arch:ak,v,
-   title:rep(e.t),sub:e.sub?rep(e.sub):'',img:e.img,kicker:rep(e.k),
+   title:rep(e.t),sub:e.sub?rep(e.sub):'',img:e.img,kicker:e.k?rep(e.k):'',hook:rep(e.h||e.t||''),
    caption,prompt,player,club,esc,esc2,userImg:null,anim:ak==='E',
    metric:e.val?{val:rep(e.val),lab:rep(e.lab),mt:(e.mt||[]).map(rep)}:null,
    quote:e.q?{q:rep(e.q),who:rep(e.who),role:rep(e.role)}:null,
    kinetic:e.lines?{lines:e.lines.map(x=>rep(x)),chip:rep(e.chip)}:null,
-   steps:e.steps?{kicker:rep(e.fk),title:rep(e.ft),steps:e.steps.map(s=>[rep(s[0]),rep(s[1])])}:null});
+   steps:e.steps?{kicker:rep(e.fk),title:rep(e.ft),steps:e.steps.map(s=>[rep(s[0]),rep(s[1])])}:null,
+   chrome:e.chrome?Object.assign({},e.chrome,{word:rep(e.chrome.word),note:rep(e.chrome.note)}):null,
+   fluid:e.fluid?Object.assign({},e.fluid,{word:rep(e.fluid.word),note:rep(e.fluid.note)}):null,
+   signal:e.signal?Object.assign({},e.signal,{lines:e.signal.lines.map(rep),note:rep(e.signal.note)}):null,
+   orbit:e.orbit?Object.assign({},e.orbit,{word:rep(e.orbit.word),note:rep(e.orbit.note)}):null});
   n++;
  }
  return posts;
@@ -564,6 +632,7 @@ const N={
  line:o=>Object.assign({t:'line',sw:2},o),
  path:(d,o={})=>Object.assign({t:'path',d,op:1},o),
  img:o=>Object.assign({t:'img',rx:0,op:1},o),
+ proc:o=>Object.assign({t:'proc',op:1,seed:1},o),
  txt(o){const f=o.f||'ui',w=o.w||700,s=o.s;const raw=o.upper?String(o.text).toUpperCase():String(o.text);
   const lines=o.lines||(o.maxW?wrapLines(raw,f,w,s,o.maxW,o.ls||0):[raw]);
   return{t:'text',x:o.x,y:o.y,f,w,s,fill:o.fill,align:o.align||'left',ls:o.ls||0,lh:o.lh||Math.round(s*1.16),lines,op:o.op??1,st:o.st||null,gid:o.gid||null};}
@@ -613,10 +682,15 @@ function pill(S,x,y,text,o={}){
  ]));
  return w;
 }
+function addBrandStamp(S,x,y,scale=1){
+ S.add(N.g('brand-stamp',[
+  N.rect({x:-29*scale,y:-18*scale,w:58*scale,h:36*scale,rx:11*scale,fill:BRAND.green,shadow:{color:'rgba(0,230,118,.32)',blur:22*scale,dy:0}}),
+  N.txt({x:0,y:8*scale,text:'ExMe',f:'disp',w:900,s:16*scale,fill:BRAND.navy,align:'center',ls:.2})
+ ],{x,y}));
+}
 function addHeader(S,post){
- const{W}=S;const pil=PILLARS[post.pillar];
- pill(S,64,56,`${pil.short} · ${post.esc.toUpperCase()}`,{s:18,fg:pil.accent==='#FFFFFF'?'#E7F2EC':pil.accent,bg:'rgba(231,242,236,.06)',bd:'rgba(231,242,236,.22)'});
- S.add(N.txt({x:W-64,y:56+31,text:`${post.id.toUpperCase()} / 60 · ${ARCHS[post.arch].letter}`,f:'mono',w:700,s:18,fill:BRAND.faint,align:'right',ls:2}));
+ // Metadados editoriais ficam no estúdio, nunca na peça exportada.
+ addBrandStamp(S,72,74,.9);
 }
 function addFooter(S,post){
  const{W,H}=S;const y=H-92;
@@ -638,7 +712,7 @@ function buildHero(post,fmt,t){
  addPitch(S,{cx:W*.5,cy:H*.44,r:W*.44,op:.07,rot:-18});
  const cg=S.rad('cardGlow',{cx:W*.5,cy:H*.46,r:W*.62,stops:[[0,'rgba(0,230,118,.22)'],[1,'rgba(0,230,118,0)']]});
  S.add(N.rect({x:0,y:0,w:W,h:H,fill:cg}));
- pill(S,W/2,Y?100:66,post.kicker,{align:'center',s:19});
+ addBrandStamp(S,W/2,Y?76:52,1);
  const cw=770,ch=Y?960:930,cx=W/2,cy=Y?H*.47:H*.465,rot=-2.4;
  const x=cx-cw/2,y=cy-ch/2;
  S.lin('foil',{x1:x,y1:y,x2:x+cw,y2:y+ch,stops:[[0,'#F59E0B'],[.2,'#FFE9B8'],[.42,'#00E676'],[.62,'#7CFFD4'],[.78,'#00F0FF'],[1,'#F59E0B']]});
@@ -649,7 +723,7 @@ function buildHero(post,fmt,t){
   N.rect({x,y,w:cw,h:ch,rx:34,fill:{grad:'foil'},shadow:{color:'rgba(0,0,0,.6)',blur:70,dy:34}}),
   N.rect({x:x+10,y:y+10,w:cw-20,h:ch-20,rx:26,fill:{grad:'inner'}}),
   N.txt({x:x+44,y:y+66,text:post.club.short,f:'mono',w:800,s:20,fill:BRAND.green,ls:4}),
-  N.txt({x:x+cw-44,y:y+66,text:'Nº 001',f:'mono',w:700,s:20,fill:BRAND.faint,align:'right',ls:2}),
+  N.txt({x:x+cw-44,y:y+66,text:'EXME',f:'mono',w:700,s:20,fill:BRAND.faint,align:'right',ls:2}),
   N.line({x1:x+44,y1:y+88,x2:x+cw-44,y2:y+88,stroke:'rgba(231,242,236,.12)',sw:1.5}),
   N.img({src:photoSrc,x:x+40,y:fY1,w:cw-80,h:fH,rx:20,tint:.16,tintColor:'#0B0E14'}),
   N.rect({x:x+40,y:fY1,w:cw-80,h:fH,rx:20,fill:S.lin('fade',{x1:0,y1:fY1,x2:0,y2:fY1+fH,stops:[[0,'rgba(11,14,20,0)'],[1,'rgba(11,14,20,.8)']]}),op:.85}),
@@ -758,7 +832,7 @@ function buildMetric(post,fmt,t){
  const S=scene(post,fmt,t);const{W,H}=S;const Y=fmt==='story';
  addBg(S,{imgKey:post.img,imgOp:.17,glowY:.42,glowOp:.18});
  addPitch(S,{cx:W*.5,cy:H*.52,r:W*.48,op:.07,rot:-10});
- pill(S,W/2,Y?108:82,'SMART TRADE · EXME',{align:'center',s:19});
+ addBrandStamp(S,W/2,Y?108:82,1);
  const cy=Y?H*.44:H*.45;
  const val=post.metric.val.toUpperCase();
  const echoS=fitSize(val,'disp',900,W*.92,420);
@@ -784,7 +858,7 @@ function buildMetric(post,fmt,t){
 function buildQuote(post,fmt,t){
  const S=scene(post,fmt,t);const{W,H}=S;const Y=fmt==='story';
  addBg(S,{imgKey:post.img,imgOp:.2,glowY:.28,glowOp:.14});
- pill(S,64,Y?110:78,'SOCIAL PROOF · COMUNIDADE EXME',{s:18});
+ addBrandStamp(S,82,Y?110:78,.95);
  S.add(N.txt({x:56,y:Y?400:318,text:'\u201C',f:'disp',w:900,s:230,fill:BRAND.green,op:.95,gid:'quote-mark'}));
  const qy=Y?470:386;
  const qLines=wrapLines(post.quote.q,'ui',500,47,W-190);
@@ -850,7 +924,7 @@ function buildKinetic(post,fmt,t){
  S.lin('volt',{x1:W*.1,y1:cy-40,x2:W*.9,y2:cy+90,stops:[[0,'#00E676'],[.55,'#10E868'],[1,'#00F0FF']]});
  S.add(N.g('kinetic-type',kids,{rotate:rot,px:W/2,py:cy}));
  S.add(N.rect({x:W/2-90,y:cy+tot/2+66,w:180,h:8,rx:4,fill:{grad:'volt'}}));
- pill(S,64,Y?128:96,post.kinetic.chip,{s:19,fg:BRAND.cyan,bg:'rgba(0,240,255,.08)',bd:'rgba(0,240,255,.45)'});
+ addBrandStamp(S,82,Y?128:96,.95);
  S.add(N.txt({x:W-40,y:H-150,text:'\u00BB',f:'disp',w:900,s:110,fill:BRAND.green,align:'right',op:.4}));
  S.add(N.txt({x:64,y:H-150,text:'EXME.APP',f:'mono',w:800,s:20,fill:BRAND.faint,ls:4}));
  addFooter(S,post);addVign(S,.5);addNoise(S,.05);
@@ -867,7 +941,7 @@ function buildCarousel(post,fmt,t){
  const S=scene(post,fmt,t);const{W,H}=S;const Y=fmt==='story';
  addBg(S,{imgKey:post.img,imgOp:.1,glowY:.25,glowOp:.13});
  addPitch(S,{cx:W*.5,cy:H*.34,r:W*.5,op:.06,rot:-6});
- pill(S,W/2,Y?96:64,post.steps.kicker,{align:'center',s:18,fg:BRAND.gold,bg:'rgba(245,158,11,.08)',bd:'rgba(245,158,11,.45)'});
+ addBrandStamp(S,W/2,Y?82:54,.95);
  const tl=wrapLines(post.steps.title,'disp',800,56,W-200);
  const ty=(Y?150:112)+52;
  S.add(N.txt({x:W/2,y:ty,lines:tl,f:'disp',w:800,s:56,fill:'#fff',align:'center',maxW:W-200,upper:true,gid:'typography'}));
@@ -898,8 +972,132 @@ function buildCarousel(post,fmt,t){
  return S;
 }
 
+/* ============ 3g. PROCEDURAL GPU-READY ARCHETYPES G–J ============ */
+/*
+   Estes quatro layouts são a camada editorial nova: não repetem o cartão,
+   o split ou o carrossel. O node `proc` tem uma versão Canvas determinística
+   para exportação e é alimentado pela mesma linguagem visual do fundo WGSL.
+*/
+function hashProc(n){const x=Math.sin(n*12.9898+78.233)*43758.5453;return x-Math.floor(x)}
+function procPath(ctx,x,y,w,h,seed,wide=false){
+ const p=(k,amp)=>hashProc(seed+k)*amp;
+ ctx.beginPath();ctx.moveTo(x+w*.14+p(1,w*.08),y+h*.52);
+ ctx.bezierCurveTo(x+w*.02,y+h*.18+p(2,h*.1),x+w*.22+p(3,w*.09),y+h*.06+p(4,h*.08),x+w*.49,y+h*.14+p(5,h*.06));
+ ctx.bezierCurveTo(x+w*.82+p(6,w*.1),y+h*.02+p(7,h*.08),x+w*.98,y+h*.33+p(8,h*.08),x+w*.82,y+h*.55+p(9,h*.1));
+ ctx.bezierCurveTo(x+w*.67+p(10,w*.08),y+h*.82+p(11,h*.08),x+w*.42,y+h*.91+p(12,h*.06),x+w*.18+p(13,w*.1),y+h*.76+p(14,h*.08));
+ ctx.bezierCurveTo(x+w*.04,y+h*.67+p(15,h*.08),x+w*.05,y+h*.56,x+w*.14+p(16,w*.04),y+h*.52);
+ if(wide)ctx.closePath();else ctx.closePath();
+}
+function paintProc(ctx,n,S){
+ const{x=0,y=0,w=S.W,h=S.H,kind='chrome',seed=1,tone='#00E676'}=n;
+ ctx.save();roundPath(ctx,x,y,w,h,n.rx||0);ctx.clip();
+ const accent=tone||'#00E676';
+ if(kind==='chrome'){
+  const base=ctx.createLinearGradient(x,y,x+w,y+h);base.addColorStop(0,'#161D2A');base.addColorStop(.48,'#080B12');base.addColorStop(1,'#202B35');ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
+  const aura=ctx.createRadialGradient(x+w*.5,y+h*.42,0,x+w*.5,y+h*.42,Math.max(w,h)*.64);aura.addColorStop(0,'rgba(0,240,255,.22)');aura.addColorStop(.45,'rgba(0,230,118,.09)');aura.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=aura;ctx.fillRect(x,y,w,h);
+  ctx.save();procPath(ctx,x+w*.08,y+h*.08,w*.84,h*.8,seed);ctx.shadowColor='rgba(0,230,118,.42)';ctx.shadowBlur=Math.min(70,w*.08);const chrome=ctx.createLinearGradient(x+w*.12,y+h*.08,x+w*.88,y+h*.9);chrome.addColorStop(0,'#F5FFF9');chrome.addColorStop(.12,'#84FFE0');chrome.addColorStop(.28,'#243743');chrome.addColorStop(.48,'#E6FFF8');chrome.addColorStop(.59,'#071119');chrome.addColorStop(.76,'#00E676');chrome.addColorStop(.9,'#B8FFF1');chrome.addColorStop(1,'#16212C');ctx.fillStyle=chrome;ctx.fill();ctx.shadowBlur=0;ctx.restore();
+  for(let i=0;i<7;i++){
+   const yy=y+h*(.18+i*.105)+Math.sin(seed+i)*h*.025;
+   ctx.beginPath();ctx.moveTo(x+w*.18,yy);ctx.bezierCurveTo(x+w*.34,yy-h*.07,x+w*.55,yy+h*.07,x+w*.84,yy-h*.02);ctx.strokeStyle=i%2?'rgba(0,240,255,.28)':'rgba(255,255,255,.32)';ctx.lineWidth=Math.max(2,w*.006);ctx.stroke();
+  }
+  for(let i=0;i<18;i++){const px=x+w*(.12+hashProc(seed+i*4)*.76),py=y+h*(.12+hashProc(seed+i*7+2)*.76);ctx.beginPath();ctx.arc(px,py,1.5+hashProc(i+seed)*4,0,Math.PI*2);ctx.fillStyle=i%3===0?'rgba(245,158,11,.75)':'rgba(0,240,255,.5)';ctx.fill()}
+ }else if(kind==='fluid'){
+  const base=ctx.createLinearGradient(x,y,x+w,y+h);base.addColorStop(0,'#07161A');base.addColorStop(.5,'#0B2430');base.addColorStop(1,'#111427');ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
+  for(let i=0;i<13;i++){
+   const yy=y+h*(.08+i*.073),amp=h*(.04+hashProc(seed+i)*.1),phase=hashProc(seed+i*3)*Math.PI*2;
+   ctx.beginPath();ctx.moveTo(x-w*.1,yy);
+   for(let j=0;j<=12;j++){const xx=x-w*.1+(w*1.2*j/12);const ny=yy+Math.sin(j*.8+phase+seed*.07)*amp+Math.sin(j*2.3+phase)*amp*.28; if(j===0)ctx.moveTo(xx,ny);else ctx.lineTo(xx,ny)}
+   const grad=ctx.createLinearGradient(x,yy,x+w,yy+amp);grad.addColorStop(0,i%3===0?'rgba(0,240,255,.05)':'rgba(0,230,118,.06)');grad.addColorStop(.48,i%2?'rgba(0,230,118,.58)':'rgba(0,240,255,.58)');grad.addColorStop(1,'rgba(245,158,11,.08)');ctx.strokeStyle=grad;ctx.lineWidth=h*(.04+hashProc(i+seed)*.045);ctx.lineCap='round';ctx.stroke();
+  }
+  ctx.globalCompositeOperation='screen';ctx.filter='blur(20px)';
+  for(let i=0;i<8;i++){const px=x+w*(.12+hashProc(seed+i)*.78),py=y+h*(.1+hashProc(seed+i*9)*.78);const rr=w*(.04+hashProc(seed+i*2)*.12);const g=ctx.createRadialGradient(px,py,0,px,py,rr);g.addColorStop(0,i%2?'rgba(0,240,255,.45)':'rgba(0,230,118,.5)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,rr,0,Math.PI*2);ctx.fill()}
+  ctx.filter='none';ctx.globalCompositeOperation='source-over';
+  ctx.strokeStyle='rgba(231,242,236,.2)';ctx.lineWidth=1.2;
+  for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(x,y+h*(.14+i*.14));ctx.bezierCurveTo(x+w*.3,y+h*(.02+i*.18),x+w*.68,y+h*(.3+i*.12),x+w,y+h*(.1+i*.16));ctx.stroke()}
+ }else if(kind==='signal'){
+  const base=ctx.createLinearGradient(x,y,x+w,y+h);base.addColorStop(0,'#07120F');base.addColorStop(.46,'#0D2020');base.addColorStop(1,'#160F15');ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
+  const step=Math.max(14,Math.round(w/54));ctx.fillStyle='rgba(0,230,118,.14)';for(let py=y;py<y+h;py+=step){for(let px=x;px<x+w;px+=step){const q=hashProc(seed+px*.013+py*.017);if(q>.26){ctx.globalAlpha=.16+q*.35;ctx.fillRect(px,py,Math.max(2,step*.18),Math.max(2,step*.18))}}}ctx.globalAlpha=1;
+  ctx.strokeStyle='rgba(0,240,255,.14)';ctx.lineWidth=1;for(let py=y+4;py<y+h;py+=8){ctx.beginPath();ctx.moveTo(x,py);ctx.lineTo(x+w,py);ctx.stroke()}
+  for(let i=0;i<26;i++){const yy=y+h*(.08+hashProc(seed+i*2)*.84),xx=x+w*(.04+hashProc(seed+i*5)*.9),ww=w*(.015+hashProc(seed+i*8)*.14);ctx.fillStyle=i%3===0?'rgba(245,158,11,.72)':i%2?'rgba(0,240,255,.42)':'rgba(0,230,118,.48)';ctx.fillRect(xx,yy,ww,Math.max(3,h*.006));if(i%4===0){ctx.fillStyle='rgba(231,242,236,.55)';ctx.fillRect(xx+ww*.25,yy+h*.012,ww*.35,Math.max(2,h*.004))}}
+  const scan=ctx.createLinearGradient(x,y,x+w,0);scan.addColorStop(0,'rgba(0,230,118,.2)');scan.addColorStop(.5,'rgba(0,240,255,.03)');scan.addColorStop(1,'rgba(245,158,11,.18)');ctx.fillStyle=scan;ctx.fillRect(x,y,w,h);
+ }else if(kind==='orbit'){
+  const base=ctx.createRadialGradient(x+w*.52,y+h*.48,0,x+w*.52,y+h*.48,Math.max(w,h)*.7);base.addColorStop(0,'#182332');base.addColorStop(.42,'#0C1620');base.addColorStop(1,'#05080D');ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
+  for(let i=0;i<110;i++){const px=x+w*hashProc(seed+i*2.1),py=y+h*hashProc(seed+i*4.7),r=hashProc(seed+i*8)*2.8+.4;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fillStyle=i%7===0?'rgba(245,158,11,.8)':'rgba(0,240,255,'+(0.14+hashProc(i+seed)*.42)+')';ctx.fill()}
+  const cx=x+w*(.5+Math.sin(seed)*.04),cy=y+h*(.5+Math.cos(seed)*.04);
+  for(let i=0;i<6;i++){ctx.save();ctx.translate(cx,cy);ctx.rotate((i*.32+seed*.06));ctx.beginPath();ctx.ellipse(0,0,w*(.18+i*.065),h*(.07+i*.035),0,0,Math.PI*2);ctx.strokeStyle=i%2?'rgba(0,230,118,.46)':'rgba(0,240,255,.46)';ctx.lineWidth=Math.max(1.5,w*.004);ctx.stroke();ctx.restore()}
+  const core=ctx.createRadialGradient(cx-w*.04,cy-h*.06,0,cx,cy,w*.14);core.addColorStop(0,'#F4FFF9');core.addColorStop(.14,'#A1FFE1');core.addColorStop(.35,'#00E676');core.addColorStop(.68,'#0B3C42');core.addColorStop(1,'rgba(0,230,118,0)');ctx.fillStyle=core;ctx.beginPath();ctx.arc(cx,cy,w*.16,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(245,158,11,.7)';ctx.lineWidth=Math.max(2,w*.006);ctx.beginPath();ctx.arc(cx,cy,w*.1,0,Math.PI*2);ctx.stroke();
+ }
+ ctx.restore();
+}
+function buildChrome(post,fmt,t){
+ const S=scene(post,fmt,t),{W,H}=S,Y=fmt==='story',c=post.chrome||{};
+ addBg(S,{imgKey:post.img,imgOp:.07,glowY:.3,glowOp:.1});
+ addBrandStamp(S,74,Y?82:56,.95);
+ const box={x:Y?64:78,y:Y?220:148,w:Y?W-128:W-156,h:Y?770:610,rx:34};
+ S.add(N.proc({kind:'chrome',seed:post.n,x:box.x,y:box.y,w:box.w,h:box.h,rx:box.rx,tone:c.tone}));
+ S.add(N.rect({x:box.x,y:box.y,w:box.w,h:box.h,rx:box.rx,fill:'none',stroke:'rgba(0,240,255,.32)',sw:2}));
+ const word=c.word||post.title.split(' ')[0];
+ const ws=fitSize(word,'disp',900,W*.72,Y?168:190);
+ S.add(N.txt({x:W/2,y:box.y+box.h*.53,text:word,f:'disp',w:900,s:ws,fill:null,st:{color:'#F4FFF9',lw:2.2},align:'center',ls:2,upper:true,gid:'typography'}));
+ const tLines=wrapLines(post.title,'ui',700,34,W-180);
+ const ty=Y?108:850;
+ S.add(N.txt({x:W/2,y:ty,lines:tLines,f:'ui',w:700,s:34,fill:'#fff',align:'center',maxW:W-180,lh:42,gid:'typography'}));
+ S.add(N.txt({x:W/2,y:box.y+box.h-42,text:(c.note||'uma peça para guardar').toUpperCase(),f:'mono',w:700,s:14,fill:'rgba(231,242,236,.72)',align:'center',ls:3}));
+ const hookY=Y?1080:1018;
+ S.add(N.txt({x:64,y:hookY,lines:wrapLines(post.hook,'ui',500,27,W-128),f:'ui',w:500,s:27,fill:BRAND.dim,maxW:W-128,lh:36,gid:'typography'}));
+ addFooter(S,post);addVign(S,.48);addNoise(S,.035);return S;
+}
+function buildFluid(post,fmt,t){
+ const S=scene(post,fmt,t),{W,H}=S,Y=fmt==='story',f=post.fluid||{};
+ addBg(S,{imgKey:post.img,imgOp:.05,glowY:.2,glowOp:.1});
+ addBrandStamp(S,74,Y?82:56,.95);
+ const titleY=Y?180:148;
+ const tl=wrapLines(post.title,'disp',800,58,W-170);
+ S.add(N.txt({x:72,y:titleY,lines:tl,f:'disp',w:800,s:58,fill:'#fff',maxW:W-170,lh:68,upper:true,gid:'typography'}));
+ const panel={x:Y?48:58,y:Y?520:385,w:Y?W-96:W-116,h:Y?760:575,rx:38};
+ S.add(N.proc({kind:'fluid',seed:post.n,x:panel.x,y:panel.y,w:panel.w,h:panel.h,rx:panel.rx,tone:f.tone}));
+ S.add(N.rect({x:panel.x,y:panel.y,w:panel.w,h:panel.h,rx:panel.rx,fill:'none',stroke:'rgba(0,240,255,.28)',sw:1.5}));
+ const word=f.word||'FLUXO',ws=fitSize(word,'disp',900,W*.76,Y?150:176);
+ S.add(N.txt({x:W/2,y:panel.y+panel.h*.54,text:word,f:'disp',w:900,s:ws,fill:'#F0FFF8',align:'center',ls:2,upper:true,gid:'typography'}));
+ S.add(N.txt({x:W/2,y:panel.y+panel.h-40,text:(f.note||'uma coleção viva').toUpperCase(),f:'mono',w:700,s:14,fill:'rgba(231,242,236,.78)',align:'center',ls:3}));
+ const hookY=Y?1375:1040;S.add(N.txt({x:72,y:hookY,lines:wrapLines(post.hook,'ui',500,28,W-144),f:'ui',w:500,s:28,fill:BRAND.dim,maxW:W-144,lh:38,gid:'typography'}));
+ addFooter(S,post);addVign(S,.48);addNoise(S,.04);return S;
+}
+function buildSignal(post,fmt,t){
+ const S=scene(post,fmt,t),{W,H}=S,Y=fmt==='story',g=post.signal||{};
+ addBg(S,{imgKey:post.img,imgOp:.035,glowY:.42,glowOp:.07});
+ S.add(N.proc({kind:'signal',seed:post.n,x:0,y:0,w:W,h:H,tone:g.tone}));
+ S.add(N.rect({x:28,y:28,w:W-56,h:H-56,rx:22,fill:'none',stroke:'rgba(0,240,255,.42)',sw:2}));
+ addBrandStamp(S,92,Y?106:90,.95);
+ const lines=g.lines||wrapLines(post.title,'disp',900,150,W-160);
+ const ss=lines.map(l=>fitSize(l,'disp',900,W-160,Y?154:180));
+ const lh=ss.map(s=>s*1.02);let sy=Y?430:360;
+ lines.forEach((line,i)=>{S.add(N.txt({x:Y?80:W/2,y:sy+ss[i],text:line,f:'disp',w:900,s:ss[i],fill:i%2?'#F4FFF9':{grad:'sigvolt'},align:Y?'left':'center',ls:2,upper:true,gid:'typography'}));sy+=lh[i]});
+ S.lin('sigvolt',{x1:0,y1:0,x2:W,y2:H,stops:[[0,'#00E676'],[.5,'#F4FFF9'],[1,'#00F0FF']]});
+ const noteY=Y?1100:925;S.add(N.txt({x:Y?80:W/2,y:noteY,text:(g.note||post.title).toUpperCase(),f:'mono',w:700,s:18,fill:BRAND.gold,align:Y?'left':'center',ls:3}));
+ S.add(N.txt({x:Y?80:W/2,y:noteY+58,lines:wrapLines(post.hook,'ui',500,28,Y?W-160:W-140),f:'ui',w:500,s:28,fill:'rgba(231,242,236,.84)',align:Y?'left':'center',maxW:Y?W-160:W-140,lh:38,gid:'typography'}));
+ addFooter(S,post);addVign(S,.4);return S;
+}
+function buildOrbit(post,fmt,t){
+ const S=scene(post,fmt,t),{W,H}=S,Y=fmt==='story',o=post.orbit||{};
+ addBg(S,{imgKey:post.img,imgOp:.075,glowY:.34,glowOp:.1});
+ const art={x:Y?42:W*.38,y:Y?350:110,w:Y?W-84:W*.57,h:Y?770:H-250,rx:36};
+ S.add(N.proc({kind:'orbit',seed:post.n,x:art.x,y:art.y,w:art.w,h:art.h,rx:art.rx,tone:o.tone}));
+ S.add(N.rect({x:art.x,y:art.y,w:art.w,h:art.h,rx:art.rx,fill:'none',stroke:'rgba(0,230,118,.3)',sw:1.5}));
+ addBrandStamp(S,Y?W/2:74,Y?86:58,.95);
+ const word=o.word||'JUNTA',wordS=fitSize(word,'disp',900,Y?W*.72:W*.42,Y?140:116);
+ const wx=Y?W/2:W*.69,wy=Y?art.y+art.h*.53:art.y+art.h*.57;
+ S.add(N.txt({x:wx,y:wy,text:word,f:'disp',w:900,s:wordS,fill:'#F4FFF9',align:'center',ls:2,upper:true,gid:'typography'}));
+ if(!Y){const tl=wrapLines(post.title,'disp',800,52,W*.32);S.add(N.txt({x:72,y:228,lines:tl,f:'disp',w:800,s:52,fill:'#fff',maxW:W*.29,lh:61,upper:true,gid:'typography'}));}
+ else{const tl=wrapLines(post.title,'ui',700,31,W-150);S.add(N.txt({x:W/2,y:205,lines:tl,f:'ui',w:700,s:31,fill:'#fff',align:'center',maxW:W-150,lh:40,gid:'typography'}));}
+ const noteY=Y?1220:1008;S.add(N.txt({x:Y?W/2:72,y:noteY,text:(o.note||'uma ligação que fica').toUpperCase(),f:'mono',w:700,s:15,fill:BRAND.green,align:Y?'center':'left',ls:3}));
+ S.add(N.txt({x:Y?72:72,y:noteY+52,lines:wrapLines(post.hook,'ui',500,27,Y?W-144:W*.31),f:'ui',w:500,s:27,fill:BRAND.dim,align:Y?'center':'left',maxW:Y?W-144:W*.31,lh:37,gid:'typography'}));
+ addFooter(S,post);addVign(S,.5);addNoise(S,.035);return S;
+}
+
 /* ============ 3g. DISPATCH ============ */
-const BUILD={A:buildHero,B:buildSplit,C:buildMetric,D:buildQuote,E:buildKinetic,F:buildCarousel};
+const BUILD={A:buildHero,B:buildSplit,C:buildMetric,D:buildQuote,E:buildKinetic,F:buildCarousel,G:buildChrome,H:buildFluid,I:buildSignal,J:buildOrbit};
 function buildFallback(post,fmt,t){
  const S=scene(post,fmt,t);addBg(S,{imgKey:post.img,imgOp:.2});
  S.add(N.txt({x:S.W/2,y:S.H/2,lines:wrapLines(post.title,'disp',900,84,S.W-160),f:'disp',w:900,s:84,fill:'#fff',align:'center',maxW:S.W-160,upper:true}));
@@ -932,7 +1130,7 @@ function noiseTile(){
 function roundPath(ctx,x,y,w,h,r){r=Math.min(r||0,w/2,h/2);if(r<1){ctx.beginPath();ctx.rect(x,y,w,h);return}
  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function resolveFill(ctx,fill,S,gc){
- if(typeof fill==='string')return fill;
+ if(typeof fill==='string')return fill==='none'?'rgba(0,0,0,0)':fill;
  if(fill&&fill.grad){
   if(gc.has(fill.grad))return gc.get(fill.grad);
   const d=S.defs.find(x=>x.id===fill.grad);if(!d)return '#fff';
@@ -1032,6 +1230,7 @@ function paint(ctx,nodes,S,gc){
     break}
    case 'text':paintText(ctx,n,S,gc);break;
    case 'img':paintImg(ctx,n,S);break;
+   case 'proc':paintProc(ctx,n,S);break;
    case 'noise':{
     ctx.fillStyle=ctx.createPattern(noiseTile(),'repeat');ctx.fillRect(0,0,S.W,S.H);break}
   }
@@ -1096,7 +1295,8 @@ async function svgString(S){
    return `<filter id="${d.id}" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${dr} ${lr}"/><feFuncG type="table" tableValues="${dg} ${lg}"/><feFuncB type="table" tableValues="${db} ${lb}"/></feComponentTransfer></filter>`}
   return '';}).join('');
  const gfUrl="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&amp;family=Outfit:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700;800&amp;display=swap";
- return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${S.W}" height="${S.H}" viewBox="0 0 ${S.W} ${S.H}"><defs><style>@import url('${gfUrl}');</style>${gdefs}${idc.defs.join('')}<filter id="exnoise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0"/></filter></defs>${content}</svg>`;
+ const nextFilters=`<filter id="exliquid" x="-12%" y="-12%" width="124%" height="124%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.028" numOctaves="3" seed="7" result="warp"/><feDisplacementMap in="SourceGraphic" in2="warp" scale="18" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="exsignal"><feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="1" seed="11" result="signal"/><feDisplacementMap in="SourceGraphic" in2="signal" scale="5"/><feColorMatrix type="saturate" values="0.72"/></filter>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${S.W}" height="${S.H}" viewBox="0 0 ${S.W} ${S.H}"><defs><style>@import url('${gfUrl}');</style>${gdefs}${idc.defs.join('')}${nextFilters}<filter id="exnoise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0"/></filter></defs>${content}</svg>`;
 }
 async function svgNode(n,S,idc,walk){
  const al=n.op==null||n.op===1?'':` opacity="${n.op}"`;
@@ -1112,6 +1312,13 @@ async function svgNode(n,S,idc,walk){
   case 'path':return `<path d="${n.d}" fill="${n.fill?svgFill(n.fill):'none'}"${n.stroke?` stroke="${n.stroke}" stroke-width="${n.sw||2}" stroke-linecap="round" stroke-linejoin="round"`:''}${al}/>`;
   case 'text':return svgText(n,al);
   case 'img':return await svgImg(n,al,idc);
+  case 'proc':{
+   const fill=n.kind==='signal'?'#0B2020':n.kind==='fluid'?'#0B2430':n.kind==='orbit'?'#0C1620':'#101923';
+   const accent=n.tone||'#00E676';
+   const r=n.rx||0;
+   const fx=n.kind==='signal'?' filter="url(#exsignal)"':(n.kind==='chrome'||n.kind==='fluid')?' filter="url(#exliquid)"':'';
+   return `<g${al}${fx}><rect x="${n.x||0}" y="${n.y||0}" width="${n.w||S.W}" height="${n.h||S.H}" rx="${r}" fill="${fill}"/><ellipse cx="${(n.x||0)+(n.w||S.W)*.52}" cy="${(n.y||0)+(n.h||S.H)*.5}" rx="${(n.w||S.W)*.22}" ry="${(n.h||S.H)*.18}" fill="${accent}" opacity=".16"/><path d="M${n.x||0} ${(n.y||0)+(n.h||S.H)*.62} C${(n.x||0)+(n.w||S.W)*.24} ${(n.y||0)+(n.h||S.H)*.18}, ${(n.x||0)+(n.w||S.W)*.7} ${(n.y||0)+(n.h||S.H)*.88}, ${(n.x||0)+(n.w||S.W)} ${(n.y||0)+(n.h||S.H)*.3}" fill="none" stroke="${accent}" stroke-width="${Math.max(2,(n.w||S.W)*.006)}" opacity=".52"/></g>`;
+  }
   case 'noise':return `<rect width="${S.W}" height="${S.H}" filter="url(#exnoise)" opacity="${n.op??.05}"/>`;
  }
  return '';
@@ -1190,7 +1397,7 @@ function renderGrid(){
  io.disconnect();anims.clear();
  const g=$('#grid');g.innerHTML='';
  const list=filtered();
- $('#count').textContent=`${list.length} / 60 POSTS · PILAR ${state.pillar==='all'?'TODOS':state.pillar} · ${state.arch==='all'?'TODOS OS ARQUÉTIPOS':state.arch} · ${state.fmt.toUpperCase()}`;
+ $('#count').textContent=`${list.length} / 100 POSTS · PILAR ${state.pillar==='all'?'TODOS':state.pillar} · ${state.arch==='all'?'TODOS OS ARQUÉTIPOS':state.arch} · ${state.fmt.toUpperCase()}`;
  if(!list.length){g.innerHTML='<div class="card-empty">NENHUM POST CORRESPONDE AOS FILTROS ATUAIS</div>';return}
  for(const post of list){
   const d=document.createElement('article');d.className='card';if(post.anim)d.dataset.anim='1';
@@ -1210,7 +1417,7 @@ function renderGrid(){
    </div>`;
   const cv=d.querySelector('canvas');
   const a={el:d,cv,post,vis:false,getFmt:()=>state.fmt,getScale:S=>Math.max(.12,((cv.parentElement||{clientWidth:250}).clientWidth||250)/S.W)};
-  d.__a=a;anims.add(a);io.observe(d);
+  d.__a=a;if(post.anim)anims.add(a);io.observe(d);
   d.addEventListener('click',ev=>{
    const b=ev.target.closest('button[data-act]');if(!b)return;
    const act=b.dataset.act;
@@ -1228,7 +1435,7 @@ let modalPost=null,modalFmt='feed',modalAnimOn=false;
 const modalAnim={cv:null,post:null,vis:true,getFmt:()=>modalFmt,getScale:S=>{const st=$('#mCanvas').parentElement;const mw=(st.clientWidth||640)-44,mh=Math.max(320,innerHeight*.72);return Math.min(mw/S.W,mh/S.H)}};
 function openModal(post){
  modalPost=post;modalFmt=state.fmt;
- $('#mId').textContent=post.id.toUpperCase()+' / 60';
+ $('#mId').textContent=post.id.toUpperCase()+' / 100';
  $('#mArch').textContent='ARQUÉTIPO '+post.arch+' · '+ARCHS[post.arch].label.toUpperCase();
  $('#mPillar').textContent='PILAR '+post.pillar+' · '+PILLARS[post.pillar].short;
  $('#mTitle').textContent=post.title;
@@ -1297,9 +1504,9 @@ function readFile(f){
 async function pngBlob(post,fmt,scale=2){
  const S=buildScene(post,fmt,0.42);
  await preloadScene(S);
- const c=document.createElement('canvas');
+ const c=typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(Math.round(S.W*scale),Math.round(S.H*scale)):document.createElement('canvas');
  drawScene(c,S,scale);
- const b=await new Promise(res=>c.toBlob(bb=>res(bb),'image/png'));
+ const b=c.convertToBlob?await c.convertToBlob({type:'image/png'}):await new Promise(res=>c.toBlob(bb=>res(bb),'image/png'));
  c.width=c.height=1;
  return b;
 }
@@ -1367,7 +1574,7 @@ async function exportPillarZIP(){
   progHide();toast(`Pilar ${state.pillar} exportado \u2014 ${list.length} posts \u2713 (${fmtBytes(b.size)})`);
  }catch(e){progHide();toast('Falha na exporta\u00E7\u00E3o do pilar: '+e.message,'!')}
 }
-const README=`EXME POST STUDIO \u2014 ACERVO DE 60 PUBLICA\u00C7\u00D5ES PHYGITAL
+const README=`EXME POST STUDIO \u2014 ACERVO DE 100 PUBLICA\u00C7\u00D5ES PHYGITAL
 =====================================================================
 ExMe \u00B7 Exchange Made Easy \u00B7 exme.club
 
@@ -1379,12 +1586,14 @@ Estrutura: pilar-N-slug/post-XX-slug/{feed,story}.{png,svg} + legenda.txt + imag
 
 PILARES: 1 Lan\u00E7amentos de Clubes & Forma\u00E7\u00E3o \u00B7 2 Trocas & Super-Algoritmo \u00B7 3 A Experi\u00EAncia Phygital \u00B7 4 Valor Institucional B2B \u00B7 5 Comunidade & Cultura de Colecionador
 ARQU\u00C9TIPOS: A Cromo Hero Card \u00B7 B Phygital Split \u00B7 C Big Metric \u00B7 D Social Proof & Quote \u00B7 E Kinetic Typo & Match \u00B7 F Carrossel Cont\u00EDnuo
+          G Liquid Chrome SDF \u00B7 H Fluid Bloom / Domain Warp \u00B7 I CRT Halftone Signal \u00B7 J Orbital Data Sculpture
 
+Motor de renderiza\u00E7\u00E3o: WebGPU + WGSL compute/fragment shaders quando suportado; fallback Three.js/WebGL; exporta\u00E7\u00E3o raster via OffscreenCanvas. Os nomes de arqu\u00E9tipo e IDs s\u00E3o metadados internos e n\u00E3o aparecem nas artes.
 Termos do universo ExMe: cromos, caderneta, saquetas, repetidos, trocas, balne\u00E1rio, Smart Match, Trade Jennie, escal\u00F5es de forma\u00E7\u00E3o.
 `;
 async function exportMasterZIP(){
  try{
-  progShow('A COMPILAR O ACERVO MASTER \u00B7 60 POSTS');
+  progShow('A COMPILAR O ACERVO MASTER \u00B7 100 POSTS');
   const zip=new JSZip();
   zip.file('README.txt',txtBlob(README));
   zip.file('_catalogo/exme-catalogo.json',txtBlob(JSON.stringify({
@@ -1397,54 +1606,116 @@ async function exportMasterZIP(){
   for(const p of POSTS){
    const k=`pilar-${p.pillar}-${slugify(PILLARS[p.pillar].label)}`;
    folders[k]=folders[k]||zip.folder(k);
-   setProg(p.n/60*.94,`${p.id} \u2014 ${p.title}`);
+   setProg(p.n/100*.94,`${p.id} \u2014 ${p.title}`);
    await addPostToZip(folders[k],p,2);
    await nextFrame();
   }
   setProg(.95,'a comprimir (pode demorar 1-2 minutos)\u2026');
   const b=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}},md=>setProg(.95+md.percent/100*.05,'a comprimir\u2026'));
-  saveBlob(b,'exme-60-posts-master.zip');
-  progHide();toast('Master ZIP exportado \u2014 60 posts \u00D7 (feed+story PNG 2\u00D7 + SVG + TXT + cat\u00E1logo JSON) \u2713 ('+fmtBytes(b.size)+')');
+  saveBlob(b,'exme-100-posts-master.zip');
+  progHide();toast('Master ZIP exportado \u2014 100 posts \u00D7 (feed+story PNG 2\u00D7 + SVG + TXT + cat\u00E1logo JSON) \u2713 ('+fmtBytes(b.size)+')');
  }catch(e){progHide();toast('Falha na exporta\u00E7\u00E3o master: '+e.message,'!')}
 }
 
-/* ============ 7. FUNDO THREE.JS — campo de partículas interativo ============ */
-function initBG(){
- if(!window.THREE)return;
- const cv=$('#bg3d');
- let renderer;
- try{renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true})}catch(e){return}
- renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
- renderer.setSize(innerWidth,innerHeight);
- const sc=new THREE.Scene();
- const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,1,420);cam.position.z=95;
- const NP=760,pos=new Float32Array(NP*3),col=new Float32Array(NP*3);
- const c1=new THREE.Color('#00E676'),c2=new THREE.Color('#00F0FF'),c3=new THREE.Color('#F59E0B'),c4=new THREE.Color('#10E868');
- const r=mulberry32(99);
- for(let i=0;i<NP;i++){
-  pos[i*3]=(r()-.5)*280;pos[i*3+1]=(r()-.5)*170;pos[i*3+2]=(r()-.5)*130;
-  const k=r(),c=k<.6?c1:k<.82?c4:k<.95?c2:c3;
-  col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
- }
- const geo=new THREE.BufferGeometry();
- geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
- geo.setAttribute('color',new THREE.BufferAttribute(col,3));
- const pts=new THREE.Points(geo,new THREE.PointsMaterial({size:1.8,vertexColors:true,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
- sc.add(pts);
- let mx=0,my=0,run=true;
- addEventListener('pointermove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2},{passive:true});
- addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
- document.addEventListener('visibilitychange',()=>{run=!document.hidden});
- (function tick(){
-  requestAnimationFrame(tick);
-  if(!run)return;
-  const t=performance.now()*.0001;
-  pts.rotation.y=t*.5+mx*.3;
-  pts.rotation.x=Math.sin(t*.5)*.1-my*.22;
-  pts.position.y=Math.sin(t*1.3)*2.4;
-  renderer.render(sc,cam);
- })();
+/* ============ 7. NEXT-GEN BACKGROUND — WebGPU / WGSL + fallback ============ */
+function setEngine(kind,label){const el=$('#engineStatus');if(!el)return;el.dataset.engine=kind;const text=el.querySelector('span:last-child');if(text)text.textContent=label}
+const WGSL_NEXT_GEN=`
+struct Uniforms { time: f32, width: f32, height: f32, count: f32 };
+@group(0) @binding(0) var<uniform> u: Uniforms;
+@group(0) @binding(1) var<storage, read_write> particles: array<vec2<f32>>;
+
+fn hash21(p: vec2<f32>) -> f32 {
+  let h = dot(p, vec2<f32>(127.1, 311.7));
+  return fract(sin(h) * 43758.5453123);
 }
+fn noise2(p: vec2<f32>) -> f32 {
+  let i = floor(p); let f = fract(p); let s = f*f*(vec2<f32>(3.0,3.0)-2.0*f);
+  let a = hash21(i); let b = hash21(i+vec2<f32>(1.0,0.0));
+  let c = hash21(i+vec2<f32>(0.0,1.0)); let d = hash21(i+vec2<f32>(1.0,1.0));
+  return mix(mix(a,b,s.x),mix(c,d,s.x),s.y);
+}
+fn fbm(p0: vec2<f32>) -> f32 {
+  var p = p0; var value = 0.0; var amp = 0.5;
+  for(var i: i32 = 0; i < 4; i = i + 1) {
+    value = value + noise2(p) * amp; p = p * 2.03 + vec2<f32>(17.1, 9.2); amp = amp * 0.5;
+  }
+  return value;
+}
+@compute @workgroup_size(64)
+fn updateParticles(@builtin(global_invocation_id) id: vec3<u32>) {
+  let i = id.x;
+  if(i >= 1024u) { return; }
+  let p = particles[i];
+  let t = u.time * 0.00018 + f32(i) * 0.013;
+  particles[i] = fract(p + vec2<f32>(sin(t + p.y * 8.0), cos(t * 1.19 + p.x * 7.0)) * 0.00065);
+}
+@vertex
+fn vertexMain(@builtin(vertex_index) index: u32) -> @builtin(position) vec4<f32> {
+  var tri = array<vec2<f32>, 3>(vec2<f32>(-1.0,-1.0), vec2<f32>(3.0,-1.0), vec2<f32>(-1.0,3.0));
+  return vec4<f32>(tri[index], 0.0, 1.0);
+}
+@fragment
+fn fragmentMain(@builtin(position) pixel: vec4<f32>) -> @location(0) vec4<f32> {
+  var uv = pixel.xy / vec2<f32>(u.width, u.height);
+  var p = uv * 2.0 - vec2<f32>(1.0,1.0); p.x = p.x * u.width / u.height;
+  let time = u.time * 0.00012;
+  var warped = p;
+  for(var i: i32 = 0; i < 3; i = i + 1) {
+    let n = fbm(warped * (1.45 + f32(i) * 0.42) + vec2<f32>(time * (0.8 + f32(i)), -time * 0.6));
+    warped = warped + vec2<f32>(sin(n * 6.283 + time), cos(n * 5.1 - time)) * 0.075;
+  }
+  let field = fbm(warped * 2.2 + vec2<f32>(time, -time * 0.7));
+  let chrome = smoothstep(0.24, 0.76, field + 0.11 * sin(warped.x * 7.0 + time));
+  var color = mix(vec3<f32>(0.012,0.028,0.045), vec3<f32>(0.02,0.22,0.20), chrome * 0.38);
+  color = color + vec3<f32>(0.0,0.06,0.11) * smoothstep(0.32,0.9,field);
+  color = color + vec3<f32>(0.0,0.12,0.08) * smoothstep(0.18,0.92,field) + vec3<f32>(0.0,0.035,0.08) * smoothstep(0.0,0.7,abs(p.x));
+  let vignette = 1.0 - smoothstep(0.35,1.45,length(p * vec2<f32>(0.82,0.7)));
+  color = color * (0.52 + vignette * 0.48);
+  return vec4<f32>(color, 0.78);
+}`;
+
+async function initWebGPUBackground(){
+ if(!navigator.gpu||typeof GPUBufferUsage==='undefined'||typeof GPUShaderStage==='undefined'||typeof navigator.gpu.getPreferredCanvasFormat!=='function')return false;
+ const cv=$('#bg3d');let device,context,started=false;
+ try{
+  const adapter=await navigator.gpu.requestAdapter({powerPreference:'high-performance'});if(!adapter)return false;
+  device=await adapter.requestDevice();context=cv.getContext('webgpu');if(!context)return false;
+  const format=navigator.gpu.getPreferredCanvasFormat();
+  const module=device.createShaderModule({label:'ExMe WGSL domain warp',code:WGSL_NEXT_GEN});
+  const layout=device.createBindGroupLayout({entries:[
+   {binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT|GPUShaderStage.COMPUTE,buffer:{type:'uniform'}},
+   {binding:1,visibility:GPUShaderStage.COMPUTE,buffer:{type:'storage'}}
+  ]});
+  const pipelineLayout=device.createPipelineLayout({bindGroupLayouts:[layout]});
+  const renderPipeline=device.createRenderPipeline({layout:pipelineLayout,vertex:{module,entryPoint:'vertexMain'},fragment:{module,entryPoint:'fragmentMain',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'}});
+  const computePipeline=device.createComputePipeline({layout:pipelineLayout,compute:{module,entryPoint:'updateParticles'}});
+  const NP=1024,positions=new Float32Array(NP*2),rand=mulberry32(711);
+  for(let i=0;i<NP;i++){positions[i*2]=rand();positions[i*2+1]=rand()}
+  const uniform=device.createBuffer({size:16,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+  const particle=device.createBuffer({size:positions.byteLength,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});
+  device.queue.writeBuffer(particle,0,positions);
+  const bind=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:uniform}},{binding:1,resource:{buffer:particle}}]});
+  const resize=()=>{const dpr=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(innerWidth*dpr)),h=Math.max(1,Math.floor(innerHeight*dpr));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;context.configure({device,format,alphaMode:'premultiplied'})}};
+  const frame=(now)=>{if(!started)return;resize();if(document.hidden){requestAnimationFrame(frame);return}device.queue.writeBuffer(uniform,0,new Float32Array([now,cv.width,cv.height,NP]));const enc=device.createCommandEncoder({label:'ExMe compute + render'});const cp=enc.beginComputePass();cp.setPipeline(computePipeline);cp.setBindGroup(0,bind);cp.dispatchWorkgroups(Math.ceil(NP/64));cp.end();const rp=enc.beginRenderPass({colorAttachments:[{view:context.getCurrentTexture().createView(),clearValue:{r:.01,g:.02,b:.035,a:0},loadOp:'clear',storeOp:'store'}]});rp.setPipeline(renderPipeline);rp.setBindGroup(0,bind);rp.draw(3);rp.end();device.queue.submit([enc.finish()]);requestAnimationFrame(frame)};
+  addEventListener('resize',resize,{passive:true});
+  started=true;setEngine('webgpu','WEBGPU · WGSL / COMPUTE');requestAnimationFrame(frame);
+  device.lost.then(()=>{if(started){started=false;initThreeBackground()}});
+  return true;
+ }catch(err){if(typeof console!=='undefined')console.info('WebGPU indisponível; fallback progressivo.',err);return false}
+}
+function initThreeBackground(){
+ if(!window.THREE){setEngine('canvas','CANVAS · FALLBACK');return}
+ const cv=$('#bg3d');let renderer;
+ try{renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true})}catch(e){setEngine('canvas','CANVAS · FALLBACK');return}
+ setEngine('webgl','WEBGL · THREE.JS FALLBACK');renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));renderer.setSize(innerWidth,innerHeight);
+ const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,1,420);cam.position.z=95;
+ const NP=760,pos=new Float32Array(NP*3),col=new Float32Array(NP*3),c1=new THREE.Color('#00E676'),c2=new THREE.Color('#00F0FF'),c3=new THREE.Color('#F59E0B'),c4=new THREE.Color('#10E868'),r=mulberry32(99);
+ for(let i=0;i<NP;i++){pos[i*3]=(r()-.5)*280;pos[i*3+1]=(r()-.5)*170;pos[i*3+2]=(r()-.5)*130;const k=r(),c=k<.6?c1:k<.82?c4:k<.95?c2:c3;col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b}
+ const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));const pts=new THREE.Points(geo,new THREE.PointsMaterial({size:1.8,vertexColors:true,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));sc.add(pts);
+ let mx=0,my=0,run=true;addEventListener('pointermove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2},{passive:true});addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});document.addEventListener('visibilitychange',()=>{run=!document.hidden});
+ (function tick(){requestAnimationFrame(tick);if(!run)return;const tt=performance.now()*.0001;pts.rotation.y=tt*.5+mx*.3;pts.rotation.x=Math.sin(tt*.5)*.1-my*.22;pts.position.y=Math.sin(tt*1.3)*2.4;renderer.render(sc,cam)})();
+}
+async function initBG(){if(!(await initWebGPUBackground()))initThreeBackground()}
 
 /* ============ 8. BOOT ============ */
 async function boot(){
@@ -1465,6 +1736,10 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'&&document.getEleme
  (document.fonts&&document.fonts.ready?document.fonts.ready.then(boot,boot):boot());
 }
 if(typeof window!=='undefined')window.__EXME={buildPosts,buildScene,drawScene,svgString,promptText,posts:()=>POSTS,BUILD,PILLARS,ARCHS};
+</script>
+</body>
+</html>
+s:()=>POSTS,BUILD,PILLARS,ARCHS};
 </script>
 </body>
 </html>
